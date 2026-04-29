@@ -456,72 +456,54 @@ canvas#wheel{border-radius:50%;cursor:crosshair;display:block}
     <div class="page-title">Tools</div>
     <p class="page-sub">Two practical tools for your studio work and study.</p>
     <div class="stabs">
-      <button class="stab on" onclick="switchTab('palette',this)">Palette builder</button>
+      <button class="stab on" onclick="switchTab('harmony',this)">Color harmony tester</button>
       <button class="stab" onclick="switchTab('glossary',this)">Visual glossary</button>
     </div>
 
-    <!-- PALETTE BUILDER -->
-    <div class="sub-section on" id="sub-palette">
+    <!-- HARMONY TESTER -->
+    <div class="sub-section on" id="sub-harmony">
 
-      <!-- Big clear headline -->
-      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-        <div style="font-size:28px">🎨</div>
+      <!-- Intro bar -->
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
         <div>
-          <div style="font-size:15px;font-weight:500;margin-bottom:3px">What can you mix today?</div>
-          <div style="font-size:13px;color:var(--txt2);line-height:1.6">Tap the paint tubes you own below. The tool instantly shows every color you can mix — with exact step-by-step instructions.</div>
+          <div style="font-size:15px;font-weight:500;margin-bottom:2px">Pick any color — see all 6 harmony schemes instantly</div>
+          <div style="font-size:12px;color:var(--txt2);line-height:1.6">Use the color picker or type a hex value. All six schemes update live with swatches, descriptions, and painter notes.</div>
         </div>
       </div>
 
-      <!-- TWO COLUMN LAYOUT -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:start">
-
-        <!-- LEFT: your tubes -->
-        <div>
-          <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.1rem">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
-              <div>
-                <div style="font-size:13px;font-weight:500">Your paint tubes</div>
-                <div style="font-size:11px;color:var(--txt2);margin-top:1px">Tap to check off what you own</div>
-              </div>
-              <span id="pbCount" style="font-size:11px;color:var(--txt2);background:var(--bg3);padding:3px 9px;border-radius:50px;border:0.5px solid var(--border2)">0 selected</span>
-            </div>
-            <div id="pigmentGrid" style="display:flex;flex-direction:column;gap:4px"></div>
-            <div style="display:flex;gap:6px;margin-top:.75rem">
-              <button class="sm-btn" style="width:auto;padding:5px 14px" onclick="selectAllPigments()">Select all</button>
-              <button class="sm-btn" style="width:auto;padding:5px 14px" onclick="clearAllPigments()">Clear all</button>
+      <!-- COLOR INPUT ROW -->
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:.75rem;flex:1;min-width:200px">
+          <div style="position:relative">
+            <div id="htSwatch" style="width:56px;height:56px;border-radius:10px;background:#d42b1e;cursor:pointer;border:0.5px solid rgba(0,0,0,.15);overflow:hidden">
+              <input type="color" id="htPicker" value="#d42b1e" oninput="htFromPicker()" style="opacity:0;position:absolute;inset:0;width:100%;height:100%;cursor:pointer;border:none;padding:0">
             </div>
           </div>
-        </div>
-
-        <!-- RIGHT: what you can mix -->
-        <div>
-          <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.1rem;min-height:200px">
-            <div style="font-size:13px;font-weight:500;margin-bottom:.75rem">Colors you can mix right now</div>
-            <div id="pbOutput">
-              <div style="text-align:center;padding:2.5rem 1rem;color:var(--txt2)">
-                <div style="font-size:24px;margin-bottom:.5rem">👈</div>
-                <div style="font-size:13px">Select tubes on the left<br>to see your mixing options</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- end grid -->
-
-      <!-- RECIPE DETAIL PANEL (appears below when a color is clicked) -->
-      <div id="pbDetail" style="display:none;margin-top:1rem;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.25rem">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem">
-          <div id="detSwatch" style="width:52px;height:52px;border-radius:8px;flex-shrink:0;border:0.5px solid rgba(0,0,0,.1)"></div>
           <div>
-            <div id="detName" style="font-size:17px;font-weight:500"></div>
-            <div style="font-size:12px;color:var(--txt2);margin-top:2px">Step-by-step mixing recipe</div>
+            <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--txt2);margin-bottom:4px">Hex value</div>
+            <input id="htHex" type="text" value="#D42B1E" maxlength="7"
+              style="font-family:monospace;font-size:14px;font-weight:500;width:100px;padding:5px 8px;border:0.5px solid var(--border2);border-radius:var(--rad-sm);background:var(--bg3);color:var(--txt);outline:none"
+              oninput="htFromHex()" onkeydown="if(event.key==='Enter')htFromHex()">
           </div>
         </div>
-        <div class="clabel">How to mix it</div>
-        <div id="detSteps" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem"></div>
-        <div id="detTip" style="background:var(--bg3);border-radius:var(--rad-sm);padding:.65rem .9rem;font-size:12px;line-height:1.7;color:var(--txt2)"></div>
-        <div id="detNote" style="display:none;background:#fffbf0;border:0.5px solid #d8c860;border-radius:var(--rad-sm);padding:.65rem .9rem;font-size:12px;line-height:1.7;color:#5a4a00;margin-top:6px"></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <div style="font-size:11px;color:var(--txt2);margin-right:2px">Quick pick:</div>
+          <div onclick="htSetColor('#d42b1e')" style="width:26px;height:26px;border-radius:5px;background:#d42b1e;cursor:pointer;border:0.5px solid rgba(0,0,0,.15);flex-shrink:0" title="#d42b1e"></div>
+          <div onclick="htSetColor('#e8901a')" style="width:26px;height:26px;border-radius:5px;background:#e8901a;cursor:pointer;border:0.5px solid rgba(0,0,0,.15);flex-shrink:0" title="#e8901a"></div>
+          <div onclick="htSetColor('#e8c01a')" style="width:26px;height:26px;border-radius:5px;background:#e8c01a;cursor:pointer;border:0.5px solid rgba(0,0,0,.15);flex-shrink:0" title="#e8c01a"></div>
+          <div onclick="htSetColor('#3d6b1f')" style="width:26px;height:26px;border-radius:5px;background:#3d6b1f;cursor:pointer;border:0.5px solid rgba(0,0,0,.15);flex-shrink:0" title="#3d6b1f"></div>
+          <div onclick="htSetColor('#2836a0')" style="width:26px;height:26px;border-radius:5px;background:#2836a0;cursor:pointer;border:0.5px solid rgba(0,0,0,.15);flex-shrink:0" title="#2836a0"></div>
+          <div onclick="htSetColor('#4b1a6e')" style="width:26px;height:26px;border-radius:5px;background:#4b1a6e;cursor:pointer;border:0.5px solid rgba(0,0,0,.15);flex-shrink:0" title="#4b1a6e"></div>
+          <div onclick="htSetColor('#8a3510')" style="width:26px;height:26px;border-radius:5px;background:#8a3510;cursor:pointer;border:0.5px solid rgba(0,0,0,.15);flex-shrink:0" title="#8a3510"></div>
+          <div onclick="htSetColor('#c8902a')" style="width:26px;height:26px;border-radius:5px;background:#c8902a;cursor:pointer;border:0.5px solid rgba(0,0,0,.15);flex-shrink:0" title="#c8902a"></div>
+        </div>
       </div>
+
+      <!-- BASE COLOR INFO -->
+      <div id="htBaseInfo" style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1rem 1.25rem;margin-bottom:1rem;display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem"></div>
+
+      <!-- 6 HARMONY CARDS -->
+      <div id="htSchemes" style="display:flex;flex-direction:column;gap:.75rem"></div>
 
     </div>
 
@@ -677,7 +659,160 @@ function showRecipe(i,el){
   r.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-// CONCEPTS DATA — aligned to course syllabus
+// ── COLOR HARMONY TESTER ──────────────────────────────────────────
+
+// Convert hex → {h,s,l}
+function hexToHsl(hex){
+  let r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}else{
+    const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}
+  }
+  return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};
+}
+function hslToHex(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1))),x=v=>Math.round(v*255).toString(16).padStart(2,'0');return'#'+x(f(0))+x(f(8))+x(f(4))}
+function hslStr(h,s,l){return`hsl(${h},${s}%,${l}%)`}
+function colorTemp(h){return(h<60||h>=300)?'Warm':(h>=150&&h<270)?'Cool':'Neutral'}
+function colorTempTag(h){const t=colorTemp(h);return t==='Warm'?'<span style="background:#fde8d8;color:#7a3000;padding:2px 7px;border-radius:50px;font-size:10px">Warm</span>':t==='Cool'?'<span style="background:#daeaf7;color:#003a6e;padding:2px 7px;border-radius:50px;font-size:10px">Cool</span>':'<span style="background:var(--bg3);color:var(--txt2);padding:2px 7px;border-radius:50px;font-size:10px;border:0.5px solid var(--border2)">Neutral</span>';}
+function munsellValue(l){return Math.round(l/10);}
+
+const HT_SCHEMES=[
+  {key:'monochromatic',label:'Monochromatic',icon:'◉',
+   desc:'One hue across multiple values and saturations. The most unified, serene scheme — everything shares the same color family. Very strong for emotional, mood-driven work.',
+   painter:'Lower saturation and vary value widely. A full-chroma monochromatic scheme looks flat — the power comes from tints, tones, and shades of the same hue.',
+   gen:(h,s,l)=>[
+     {h,s:Math.min(s+10,100),l:Math.max(l-25,10),label:'Dark shade'},
+     {h,s,l,label:'Base color'},
+     {h,s:Math.max(s-20,10),l:Math.min(l+15,85),label:'Muted tone'},
+     {h,s:Math.max(s-35,5),l:Math.min(l+30,92),label:'Light tint'},
+   ]},
+  {key:'complementary',label:'Complementary',icon:'◑',
+   desc:'Two colors directly opposite on the wheel — maximum contrast and energy. Each makes the other appear more vivid through simultaneous contrast.',
+   painter:'Use one color for ~70% of the painting and the complement as a small vibrant accent. Equal amounts feel combative and unstable. Monet used orange light / blue shadow constantly.',
+   gen:(h,s,l)=>[
+     {h,s,l,label:'Base'},
+     {h,s:Math.max(s-15,20),l:Math.min(l+15,85),label:'Base tint'},
+     {h:(h+180)%360,s,l,label:'Complement'},
+     {h:(h+180)%360,s:Math.max(s-15,20),l:Math.min(l+15,85),label:'Complement tint'},
+   ]},
+  {key:'analogous',label:'Analogous',icon:'◔',
+   desc:'Three to five neighboring hues on the wheel. Natural and unified — like a sunset, autumn leaves, or a forest scene. Easy to make feel cohesive.',
+   painter:'Pick one dominant hue and let the others support in smaller areas. Keep one color doing the most work — avoid equal amounts of all three.',
+   gen:(h,s,l)=>[
+     {h:(h-40+360)%360,s:Math.max(s-10,20),l,label:'-40°'},
+     {h:(h-20+360)%360,s,l,label:'-20°'},
+     {h,s,l,label:'Base'},
+     {h:(h+20)%360,s,l,label:'+20°'},
+     {h:(h+40)%360,s:Math.max(s-10,20),l,label:'+40°'},
+   ]},
+  {key:'triadic',label:'Triadic',icon:'△',
+   desc:'Three colors equally spaced at 120° intervals. Vibrant, balanced, and energetic. Associated with bold, playful compositions.',
+   painter:'Let one hue dominate — reduce the other two in saturation or use them in small areas. If all three compete equally the painting becomes chaotic.',
+   gen:(h,s,l)=>[
+     {h,s,l,label:'Base'},
+     {h:(h+120)%360,s,l,label:'+120°'},
+     {h:(h+240)%360,s,l,label:'+240°'},
+   ]},
+  {key:'split',label:'Split-complementary',icon:'⌾',
+   desc:'Your base hue plus the two colors flanking its complement. High contrast but softer and more versatile than a direct complementary pair.',
+   painter:'Often the most practical scheme for realistic painting — it gives you warm/cool contrast without the tension of a direct complement. Very common in portrait and landscape work.',
+   gen:(h,s,l)=>[
+     {h,s,l,label:'Base'},
+     {h:(h+150)%360,s,l,label:'Split 1'},
+     {h:(h+210)%360,s,l,label:'Split 2'},
+   ]},
+  {key:'square',label:'Tetradic / Square',icon:'□',
+   desc:'Four colors evenly spaced at 90° intervals. A very rich, complex palette — but the hardest to balance. Rarely works at full saturation.',
+   painter:'Lower the saturation of three of the four colors and let one lead strongly. Value variation is essential — without it the scheme feels like visual noise.',
+   gen:(h,s,l)=>[
+     {h,s,l,label:'Base'},
+     {h:(h+90)%360,s,l,label:'+90°'},
+     {h:(h+180)%360,s,l,label:'+180°'},
+     {h:(h+270)%360,s,l,label:'+270°'},
+   ]},
+];
+
+let htColor='#d42b1e';
+
+function htInit(){htRender();}
+
+function htFromPicker(){
+  const v=document.getElementById('htPicker').value;
+  htColor=v;
+  document.getElementById('htHex').value=v.toUpperCase();
+  htRender();
+}
+function htFromHex(){
+  let v=document.getElementById('htHex').value.trim();
+  if(!v.startsWith('#'))v='#'+v;
+  if(/^#[0-9a-fA-F]{6}$/.test(v)){
+    htColor=v.toLowerCase();
+    document.getElementById('htPicker').value=htColor;
+    document.getElementById('htSwatch').style.background=htColor;
+    htRender();
+  }
+}
+function htSetColor(hex){
+  htColor=hex;
+  document.getElementById('htPicker').value=hex;
+  document.getElementById('htHex').value=hex.toUpperCase();
+  document.getElementById('htSwatch').style.background=hex;
+  htRender();
+}
+
+function htRender(){
+  const {h,s,l}=hexToHsl(htColor);
+  document.getElementById('htSwatch').style.background=htColor;
+
+  // Base info strip
+  const info=document.getElementById('htBaseInfo');
+  const mVal=munsellValue(l);
+  info.innerHTML=[
+    `<div style="background:var(--bg3);border-radius:var(--rad-sm);padding:6px 10px"><div style="font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px">HEX</div><div style="font-size:13px;font-weight:500;font-family:monospace;margin-top:2px">${htColor.toUpperCase()}</div></div>`,
+    `<div style="background:var(--bg3);border-radius:var(--rad-sm);padding:6px 10px"><div style="font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px">Hue</div><div style="font-size:13px;font-weight:500;font-family:monospace;margin-top:2px">${h}°</div></div>`,
+    `<div style="background:var(--bg3);border-radius:var(--rad-sm);padding:6px 10px"><div style="font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px">Value (Munsell)</div><div style="font-size:13px;font-weight:500;font-family:monospace;margin-top:2px">${mVal}/10</div></div>`,
+    `<div style="background:var(--bg3);border-radius:var(--rad-sm);padding:6px 10px"><div style="font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px">Temperature</div><div style="font-size:13px;font-weight:500;margin-top:4px">${colorTempTag(h)}</div></div>`,
+  ].join('');
+
+  // Scheme cards
+  const schemes=document.getElementById('htSchemes');schemes.innerHTML='';
+  HT_SCHEMES.forEach(scheme=>{
+    const swatches=scheme.gen(h,s,l);
+    const card=document.createElement('div');
+    card.style.cssText='background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);overflow:hidden';
+
+    // Color bar across top
+    const bar=swatches.map(sw=>`<div style="flex:1;background:${hslStr(sw.h,sw.s,sw.l)};min-height:64px;position:relative;cursor:default" title="hsl(${sw.h},${sw.s}%,${sw.l}%)"></div>`).join('');
+
+    // Swatch dots with hex
+    const dots=swatches.map(sw=>{
+      const hex=hslToHex(sw.h,sw.s,sw.l);
+      return `<div style="display:flex;align-items:center;gap:6px">
+        <div style="width:28px;height:28px;border-radius:5px;background:${hslStr(sw.h,sw.s,sw.l)};flex-shrink:0;border:0.5px solid rgba(0,0,0,.12)"></div>
+        <div><div style="font-size:11px;font-weight:500;color:var(--txt)">${sw.label}</div>
+        <div style="font-size:10px;font-family:monospace;color:var(--txt2)">${hex.toUpperCase()} &nbsp;${colorTempTag(sw.h)}</div></div>
+      </div>`;
+    }).join('');
+
+    card.innerHTML=`
+      <div style="display:flex;height:64px">${bar}</div>
+      <div style="padding:1rem 1.25rem">
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
+          <span style="font-size:16px">${scheme.icon}</span>
+          <span style="font-size:14px;font-weight:500">${scheme.label}</span>
+        </div>
+        <p style="font-size:12px;color:var(--txt2);line-height:1.75;margin-bottom:.75rem">${scheme.desc}</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem;margin-bottom:.75rem">${dots}</div>
+        <div style="background:#fffbf0;border:0.5px solid #d8c860;border-radius:var(--rad-sm);padding:.6rem .85rem;font-size:11px;line-height:1.7;color:#5a4a00">
+          <b>Painter's note:</b> ${scheme.painter}
+        </div>
+      </div>`;
+    schemes.appendChild(card);
+  });
+}
+
+
 const CONCEPTS=[
   // Week 1
   {w:'Week 1',t:'The nature of color — light, pigment, and perception',b:`<div class="cexplain"><b>What is color?</b> Color is not an intrinsic property of objects — it is the brain's interpretation of electromagnetic radiation. White light contains all visible wavelengths (~380–700nm). When light hits an object, some wavelengths are absorbed and others are reflected. The reflected wavelengths reach your eye and are perceived as color.<br><br><b>Two types of color mixing:</b><br>• <b>Additive mixing</b> (light): Red + Green + Blue = White. Used in screens and theatrical lighting. Adding light sources together moves toward white.<br>• <b>Subtractive mixing</b> (pigment): Mixing paints absorbs more wavelengths, moving toward black or gray. This is what painters do. Cyan + Magenta + Yellow = Black (in theory).<br><br><b>Color perception</b> is also biological. The eye has three types of cone cells — sensitive to long (red), medium (green), and short (blue) wavelengths. Simultaneous stimulation of all three = white. Deficiencies in any cone type produce color blindness.</div><div id="vd-physics"></div><div class="pnote">Painters work entirely in subtractive color mixing. The more pigments you combine, the more wavelengths get absorbed and the duller the result. This is why limiting your palette to 6–8 pigments produces cleaner, more luminous mixes than using 20.</div>`,draw:'physics'},
@@ -855,175 +990,6 @@ function toggleC(i){
   if(!open)setTimeout(()=>drawCVis('cvd'+i,CONCEPTS[i].draw),30);
 }
 
-// ── PALETTE BUILDER ───────────────────────────────────────────────
-const PIGMENTS=[
-  {id:'tw', name:'Titanium White',    hex:'#f2f2ee', group:'whites'},
-  {id:'iw', name:'Ivory Black',       hex:'#1c1a18', group:'blacks'},
-  {id:'cr', name:'Cadmium Red Med',   hex:'#d42b1e', group:'reds'},
-  {id:'ac', name:'Alizarin Crimson',  hex:'#7d1535', group:'reds'},
-  {id:'qr', name:'Quinacridone Red',  hex:'#a81840', group:'reds'},
-  {id:'co', name:'Cadmium Orange',    hex:'#e05a18', group:'oranges'},
-  {id:'cy', name:'Cadmium Yellow',    hex:'#e8c01a', group:'yellows'},
-  {id:'ly', name:'Lemon Yellow',      hex:'#e8e040', group:'yellows'},
-  {id:'yo', name:'Yellow Ochre',      hex:'#c8902a', group:'yellows'},
-  {id:'sg', name:'Sap Green',         hex:'#3d6b1f', group:'greens'},
-  {id:'pg', name:'Phthalo Green',     hex:'#1a6b50', group:'greens'},
-  {id:'vg', name:'Viridian',          hex:'#2a7860', group:'greens'},
-  {id:'cb', name:'Cerulean Blue',     hex:'#4aa8c8', group:'blues'},
-  {id:'ub', name:'Ultramarine Blue',  hex:'#2836a0', group:'blues'},
-  {id:'pb', name:'Prussian Blue',     hex:'#1a2e5a', group:'blues'},
-  {id:'ph', name:'Phthalo Blue',      hex:'#0a2870', group:'blues'},
-  {id:'co2',name:'Cobalt Blue',       hex:'#3060b0', group:'blues'},
-  {id:'dv', name:'Dioxazine Violet',  hex:'#4b1a6e', group:'violets'},
-  {id:'bs', name:'Burnt Sienna',      hex:'#8a3510', group:'earths'},
-  {id:'bu', name:'Burnt Umber',       hex:'#4a2208', group:'earths'},
-  {id:'ru', name:'Raw Umber',         hex:'#7a5c28', group:'earths'},
-  {id:'rs', name:'Raw Sienna',        hex:'#b87828', group:'earths'},
-];
-
-// Each recipe: {name, hex, needs:[pigment ids], steps:[{id,label,amount}], tip, note}
-const PB_RECIPES=[
-  {name:'Cadmium orange',hex:'#e05a18',needs:['cr','cy'],steps:[{id:'cr',label:'Cadmium Red Med',amount:'2 parts'},{id:'cy',label:'Cadmium Yellow',amount:'1 part'}],tip:'Or use tube Cadmium Orange. Mixing cad red + cad yellow gives a slightly earthier result. Both routes work for warm light and foliage.',note:''},
-  {name:'Bright green',hex:'#4a9a20',needs:['cy','ub'],steps:[{id:'cy',label:'Cadmium Yellow',amount:'2 parts'},{id:'ub',label:'Ultramarine Blue',amount:'1 part'}],tip:'More yellow = yellow-green (sunlit). More blue = deeper forest green. Avoid mixing Cad Yellow + Phthalo Blue directly — it can go very cold very fast.',note:''},
-  {name:'Vivid green',hex:'#1a8050',needs:['ly','pg'],steps:[{id:'ly',label:'Lemon Yellow',amount:'2 parts'},{id:'pg',label:'Phthalo Green',amount:'tiny touch'}],tip:'Phthalo Green is extremely powerful — start with a matchhead-sized amount. Add more yellow to push warmer, more phthalo for a deeper jewel green.',note:''},
-  {name:'Violet / purple',hex:'#4b1a6e',needs:['ac','ub'],steps:[{id:'ac',label:'Alizarin Crimson',amount:'2 parts'},{id:'ub',label:'Ultramarine Blue',amount:'1 part'}],tip:'Use cool pigments on both sides for a clean purple. Cadmium Red (warm) + any blue = muddy maroon. More Alizarin = warmer purple; more Ultramarine = blue-violet.',note:''},
-  {name:'Rich black',hex:'#1a1410',needs:['bu','ub'],steps:[{id:'bu',label:'Burnt Umber',amount:'2 parts'},{id:'ub',label:'Ultramarine Blue',amount:'1 part'}],tip:'Far more luminous than tube Ivory Black. More umber = warmer black for warm shadows. More ultramarine = cooler black for cool shadows. Vary the ratio to give life to dark areas.',note:'Avoid using Ivory Black as a mixing color — it deadens other pigments.'},
-  {name:'Warm brown',hex:'#6b3010',needs:['cr','cy','ub'],steps:[{id:'cr',label:'Cadmium Red Med',amount:'2 parts'},{id:'cy',label:'Cadmium Yellow',amount:'1 part'},{id:'ub',label:'Ultramarine Blue',amount:'tiny touch'}],tip:'Mix orange first (red+yellow), then add the tiniest touch of blue to knock back vibrancy into an earthy brown. Stop before it turns gray — it happens fast.',note:'Brown = neutralized orange. This is the only correct route — brown is not a primary color.'},
-  {name:'Warm brown (earth)',hex:'#7a4018',needs:['bs','yo'],steps:[{id:'bs',label:'Burnt Sienna',amount:'2 parts'},{id:'yo',label:'Yellow Ochre',amount:'1 part'}],tip:'A more muted, natural brown. Very useful for wood, soil, and landscape. Add a touch of Ultramarine to push it cooler or darker.',note:''},
-  {name:'Warm gray',hex:'#8a8070',needs:['tw','bu','ub'],steps:[{id:'bu',label:'Burnt Umber',amount:'1 part'},{id:'tw',label:'Titanium White',amount:'4 parts'},{id:'ub',label:'Ultramarine Blue',amount:'tiny touch'}],tip:'Adjust umber-to-white for value. The tiny blue touch neutralizes the warm bias so it reads as a true gray, not a tinted white.',note:''},
-  {name:'Cool gray',hex:'#7a8090',needs:['tw','ub','bu'],steps:[{id:'ub',label:'Ultramarine Blue',amount:'1 part'},{id:'tw',label:'Titanium White',amount:'5 parts'},{id:'bu',label:'Burnt Umber',amount:'tiny touch'}],tip:'More blue = darker and cooler. The Burnt Umber prevents a chalky, artificial look — it grounds the gray so it reads as atmospheric.',note:''},
-  {name:'Cerulean sky',hex:'#7ac8e0',needs:['cb','tw'],steps:[{id:'cb',label:'Cerulean Blue',amount:'1 part'},{id:'tw',label:'Titanium White',amount:'3 parts'}],tip:'Cerulean is opaque and chalky — perfect for clear blue skies. Add more white for a lighter sky near the horizon. Do not use for glazing.',note:''},
-  {name:'Deep ocean blue',hex:'#1a3060',needs:['pb','ub'],steps:[{id:'ub',label:'Ultramarine Blue',amount:'1 part'},{id:'pb',label:'Prussian Blue',amount:'1 part'}],tip:'Prussian Blue is very powerful — add gradually. This mix is excellent for deep water, dark night skies, and cool shadow zones. Add Burnt Sienna to neutralize slightly.',note:''},
-  {name:'Burnt sienna tint',hex:'#d08060',needs:['bs','tw'],steps:[{id:'bs',label:'Burnt Sienna',amount:'1 part'},{id:'tw',label:'Titanium White',amount:'3 parts'}],tip:'Produces beautiful terracotta, salmon, and warm flesh tones. A foundational mix for portrait work and warm skin in light.',note:''},
-  {name:'Flesh tone — light',hex:'#d4956a',needs:['tw','yo','cr','ub'],steps:[{id:'tw',label:'Titanium White',amount:'4 parts'},{id:'yo',label:'Yellow Ochre',amount:'1 part'},{id:'cr',label:'Cadmium Red Med',amount:'small touch'},{id:'ub',label:'Ultramarine Blue',amount:'tiny touch'}],tip:'A basic warm Caucasian light skin tone. Swap Cad Red for Alizarin for cooler skin. Reduce white and add more Burnt Sienna for darker skin tones.',note:'Shadow skin tones shift cooler and more violet — never just darken the light tone.'},
-  {name:'Flesh tone — light (alt)',hex:'#d49060',needs:['tw','bs','cr'],steps:[{id:'tw',label:'Titanium White',amount:'3 parts'},{id:'bs',label:'Burnt Sienna',amount:'1 part'},{id:'cr',label:'Cadmium Red Med',amount:'small touch'}],tip:'A simpler two-pigment flesh starting point. Burnt Sienna + white is a classic shortcut — adjust with tiny amounts of ochre or red.',note:''},
-  {name:'Muted olive green',hex:'#7a7a30',needs:['cy','ub','bs'],steps:[{id:'cy',label:'Cadmium Yellow',amount:'2 parts'},{id:'ub',label:'Ultramarine Blue',amount:'1 part'},{id:'bs',label:'Burnt Sienna',amount:'small touch'}],tip:'The Burnt Sienna warms and neutralizes the green, pushing it toward olive. Excellent for dry grass, late-summer foliage, and natural landscapes.',note:''},
-  {name:'Deep violet shadow',hex:'#301840',needs:['ub','ac','bu'],steps:[{id:'ac',label:'Alizarin Crimson',amount:'1 part'},{id:'ub',label:'Ultramarine Blue',amount:'2 parts'},{id:'bu',label:'Burnt Umber',amount:'small touch'}],tip:'A rich, dark violet for cool shadow zones, especially in portraits and fabric. The Burnt Umber grays it slightly so it reads as shadow rather than a bright accent.',note:''},
-  {name:'Sap green (mixed)',hex:'#3d6b1f',needs:['cy','pb'],steps:[{id:'cy',label:'Cadmium Yellow',amount:'3 parts'},{id:'pb',label:'Prussian Blue',amount:'1 part'}],tip:'Prussian Blue + Cadmium Yellow gives a rich, cool sap green. Use less prussian for a lighter, sunnier green. Warm with a touch of Yellow Ochre for autumn tones.',note:''},
-  {name:'Neutral dark',hex:'#303028',needs:['bu','ub','ac'],steps:[{id:'bu',label:'Burnt Umber',amount:'2 parts'},{id:'ub',label:'Ultramarine Blue',amount:'1 part'},{id:'ac',label:'Alizarin Crimson',amount:'tiny touch'}],tip:'The Alizarin lifts the black slightly toward a dark brown-violet. Excellent for shadows that need a hint of warmth without losing depth.',note:''},
-];
-
-let selectedPigments=new Set();
-
-function buildPaletteBuilder(){
-  const g=document.getElementById('pigmentGrid');
-  const groupLabels={whites:'Whites & Blacks',reds:'Reds',oranges:'Oranges',yellows:'Yellows',greens:'Greens',blues:'Blues',violets:'Violets',earths:'Earth tones'};
-  let lastGroup='';
-  PIGMENTS.forEach(p=>{
-    // group header (skip blacks as separate group — they're with whites)
-    const grp=p.group==='blacks'?'whites':p.group;
-    if(grp!==lastGroup&&groupLabels[grp]){
-      const lbl=document.createElement('div');
-      lbl.style.cssText='font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--txt2);padding:.4rem 0 .1rem;font-weight:500';
-      lbl.textContent=groupLabels[grp];g.appendChild(lbl);lastGroup=grp;
-    }
-    // tube row — horizontal, easy to read
-    const row=document.createElement('div');
-    row.id='chip-'+p.id;
-    row.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:var(--rad-sm);cursor:pointer;border:1.5px solid transparent;background:var(--bg3);transition:border-color .12s';
-    row.innerHTML=`
-      <div style="width:28px;height:28px;border-radius:5px;background:${p.hex};flex-shrink:0;border:0.5px solid rgba(0,0,0,.12)"></div>
-      <div style="font-size:12px;flex:1;color:var(--txt)">${p.name}</div>
-      <div class="chip-check" style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px"></div>`;
-    row.onclick=()=>togglePigment(p.id);
-    g.appendChild(row);
-  });
-  updatePBCount();
-}
-
-function togglePigment(id){
-  if(selectedPigments.has(id))selectedPigments.delete(id);
-  else selectedPigments.add(id);
-  const row=document.getElementById('chip-'+id);
-  const check=row.querySelector('.chip-check');
-  if(selectedPigments.has(id)){
-    row.style.borderColor='var(--txt)';row.style.background='var(--bg2)';
-    check.style.background='var(--txt)';check.style.borderColor='var(--txt)';check.textContent='✓';check.style.color='var(--bg2)';
-  } else {
-    row.style.borderColor='transparent';row.style.background='var(--bg3)';
-    check.style.background='';check.style.borderColor='var(--border2)';check.textContent='';
-  }
-  updatePBCount();renderPBOutput();
-}
-
-function selectAllPigments(){
-  PIGMENTS.forEach(p=>{selectedPigments.add(p.id);
-    const row=document.getElementById('chip-'+p.id),check=row.querySelector('.chip-check');
-    row.style.borderColor='var(--txt)';row.style.background='var(--bg2)';
-    check.style.background='var(--txt)';check.style.borderColor='var(--txt)';check.textContent='✓';check.style.color='var(--bg2)';
-  });
-  updatePBCount();renderPBOutput();
-}
-function clearAllPigments(){
-  PIGMENTS.forEach(p=>{selectedPigments.delete(p.id);
-    const row=document.getElementById('chip-'+p.id),check=row.querySelector('.chip-check');
-    row.style.borderColor='transparent';row.style.background='var(--bg3)';
-    check.style.background='';check.style.borderColor='var(--border2)';check.textContent='';
-  });
-  updatePBCount();renderPBOutput();
-}
-function updatePBCount(){
-  const n=selectedPigments.size;
-  document.getElementById('pbCount').textContent=n===0?'0 selected':n+' tube'+(n===1?'':' s')+' selected';
-}
-
-function renderPBOutput(){
-  const out=document.getElementById('pbOutput');
-  // hide detail panel when palette changes
-  document.getElementById('pbDetail').style.display='none';
-  if(selectedPigments.size===0){
-    out.innerHTML=`<div style="text-align:center;padding:2.5rem 1rem;color:var(--txt2)"><div style="font-size:24px;margin-bottom:.5rem">👈</div><div style="font-size:13px">Select tubes on the left<br>to see your mixing options</div></div>`;
-    return;
-  }
-  const available=PB_RECIPES.filter(r=>r.needs.every(id=>selectedPigments.has(id)));
-  const almostThere=PB_RECIPES.filter(r=>{
-    const miss=r.needs.filter(id=>!selectedPigments.has(id));
-    return miss.length===1;
-  });
-  if(available.length===0){
-    const hints=almostThere.slice(0,3).map(r=>{
-      const missId=r.needs.find(id=>!selectedPigments.has(id));
-      const missName=PIGMENTS.find(p=>p.id===missId)?.name||missId;
-      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg3);border-radius:var(--rad-sm);margin-bottom:4px"><div style="width:20px;height:20px;border-radius:4px;background:${r.hex};flex-shrink:0;border:0.5px solid rgba(0,0,0,.1)"></div><div style="font-size:12px"><span style="font-weight:500">${r.name}</span> — add ${missName}</div></div>`;
-    }).join('');
-    out.innerHTML=`<div style="font-size:12px;color:var(--txt2);margin-bottom:.75rem">No complete recipes yet. Try adding a few more tubes.</div>${hints}`;
-    return;
-  }
-  out.innerHTML=`<div style="font-size:12px;color:var(--txt2);margin-bottom:.65rem">You can mix <b style="color:var(--txt)">${available.length} color${available.length===1?'':'s'}</b> — tap any to see how:</div>`;
-  available.forEach(r=>{
-    const btn=document.createElement('div');
-    btn.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--rad-sm);cursor:pointer;border:1.5px solid transparent;margin-bottom:4px;background:var(--bg3)';
-    btn.innerHTML=`<div style="width:32px;height:32px;border-radius:6px;background:${r.hex};flex-shrink:0;border:0.5px solid rgba(0,0,0,.12)"></div><div style="flex:1"><div style="font-size:13px;font-weight:500">${r.name}</div><div style="font-size:11px;color:var(--txt2);margin-top:1px">${r.steps.map(s=>s.label.split(' ')[0]).join(' + ')}</div></div><div style="font-size:11px;color:var(--txt2)">→</div>`;
-    btn.onmouseenter=()=>{if(!btn.classList.contains('active'))btn.style.borderColor='var(--border2)'};
-    btn.onmouseleave=()=>{if(!btn.classList.contains('active'))btn.style.borderColor='transparent'};
-    btn.onclick=()=>showRecipeDetail(r,btn);
-    out.appendChild(btn);
-  });
-}
-
-function showRecipeDetail(r,btn){
-  // deselect others
-  document.querySelectorAll('#pbOutput div[style]').forEach(el=>{el.style.borderColor='transparent';el.classList.remove('active')});
-  btn.style.borderColor='var(--txt)';btn.classList.add('active');
-  document.getElementById('detSwatch').style.background=r.hex;
-  document.getElementById('detName').textContent=r.name;
-  const steps=document.getElementById('detSteps');steps.innerHTML='';
-  r.steps.forEach((s,i)=>{
-    const pig=PIGMENTS.find(p=>p.id===s.id);
-    const row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;gap:10px;padding:6px 8px;background:var(--bg3);border-radius:var(--rad-sm)';
-    row.innerHTML=`<div style="width:24px;height:24px;border-radius:5px;background:${pig?.hex||'#888'};flex-shrink:0;border:0.5px solid rgba(0,0,0,.1)"></div><div><div style="font-size:13px;font-weight:500">${s.label}</div><div style="font-size:11px;color:var(--txt2)">${s.amount}</div></div>`;
-    if(i<r.steps.length-1){
-      const plus=document.createElement('div');plus.style.cssText='text-align:center;color:var(--txt2);font-size:16px;padding:2px 0';plus.textContent='+';
-      steps.appendChild(row);steps.appendChild(plus);
-    } else {steps.appendChild(row);}
-  });
-  document.getElementById('detTip').textContent=r.tip;
-  const dn=document.getElementById('detNote');
-  if(r.note){dn.textContent=r.note;dn.style.display='block';}else dn.style.display='none';
-  const det=document.getElementById('pbDetail');det.style.display='block';
-  det.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
 
 // ── VISUAL GLOSSARY ────────────────────────────────────────────────
 const GLOSSARY=[
@@ -1130,7 +1096,7 @@ function go(id,btn){
 
 buildMixer();
 buildConcepts();
-buildPaletteBuilder();
+htInit();
 buildGlossary();
 renderWheel();
 </script>
