@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Fundamentals for Painters</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8f7f5;--bg2:#ffffff;--bg3:#f1f0ec;--txt:#1a1a18;--txt2:#6b6b68;--txt3:#9a9a96;--border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);--rad:12px;--rad-sm:8px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.6}
+.nav{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;background:var(--bg2);border-bottom:0.5px solid var(--border)}
+.nav-logo{font-size:15px;font-weight:500;letter-spacing:-0.3px}
+.nav-links{display:flex;gap:3px}
+.nl{padding:6px 11px;border:none;background:none;border-radius:var(--rad-sm);font-size:12px;cursor:pointer;color:var(--txt2)}
+.nl:hover,.nl.on{background:var(--bg3);color:var(--txt);font-weight:500}
+section{display:none}
+section.on{display:block}
+.hero{min-height:calc(100vh - 54px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 1.5rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;display:flex;z-index:0}
+.hero-bar{flex:1;opacity:.11}
+.hero-content{position:relative;z-index:1;max-width:580px}
+.eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--txt2);margin-bottom:1.25rem}
+.hero-title{font-size:clamp(28px,5vw,52px);font-weight:500;line-height:1.1;letter-spacing:-1.5px;margin-bottom:1.25rem;color:var(--txt)}
+.hero-sub{font-size:15px;color:var(--txt2);line-height:1.8;max-width:440px;margin:0 auto 2rem}
+.cta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-p{padding:11px 26px;border-radius:50px;background:var(--txt);color:var(--bg2);font-size:13px;font-weight:500;border:none;cursor:pointer}
+.btn-o{padding:11px 26px;border-radius:50px;background:none;border:0.5px solid var(--border2);font-size:13px;cursor:pointer;color:var(--txt)}
+.btn-p:hover{opacity:.82}.btn-o:hover{background:var(--bg3)}
+.scroll-hint{position:absolute;bottom:1.75rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--txt2);font-size:10px;letter-spacing:1.5px;text-transform:uppercase}
+.scroll-line{width:1px;height:36px;background:var(--border2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+.page{padding:1.75rem 1.25rem;max-width:720px;margin:0 auto}
+.page-title{font-size:22px;font-weight:500;letter-spacing:-0.5px;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--txt2);line-height:1.65;margin-bottom:1.5rem}
+.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.25rem;margin-bottom:.875rem}
+.clabel{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt2);margin-bottom:.65rem}
+.wlayout{display:grid;grid-template-columns:260px 1fr;gap:1rem}
+@media(max-width:560px){.wlayout{grid-template-columns:1fr}}
+.wcard{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.25rem;display:flex;flex-direction:column;align-items:center;gap:.65rem}
+canvas#wheel{border-radius:50%;cursor:crosshair;display:block}
+.hpills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.65rem}
+.hp{padding:4px 10px;border:0.5px solid var(--border2);background:none;border-radius:50px;font-size:11px;cursor:pointer;color:var(--txt2)}
+.hp.on{background:var(--txt);color:var(--bg2);border-color:transparent}
+.sw-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.65rem}
+.sw{width:40px;height:40px;border-radius:var(--rad-sm);cursor:pointer;border:2px solid transparent;flex-shrink:0}
+.sw.sel{border-color:var(--txt)}
+.sw-hex{font-size:9px;font-family:monospace;color:var(--txt2);text-align:center;margin-top:2px;width:40px}
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:.65rem}
+.ic{background:var(--bg3);border-radius:var(--rad-sm);padding:6px 8px}
+.ic-lbl{font-size:10px;color:var(--txt2);letter-spacing:.8px;text-transform:uppercase}
+.ic-val{font-size:12px;font-weight:500;font-family:monospace;margin-top:1px;color:var(--txt)}
+.desc-box{background:var(--bg3);border-radius:var(--rad-sm);padding:.65rem .85rem;font-size:12px;line-height:1.65;color:var(--txt2);margin-bottom:.65rem}
+.sm-btn{padding:6px 12px;border:0.5px solid var(--border2);background:none;border-radius:var(--rad-sm);font-size:11px;cursor:pointer;color:var(--txt2);width:100%}
+.sm-btn:hover{background:var(--bg3)}
+.confirm-txt{font-size:11px;color:#2a8a2a;min-height:14px;margin-top:3px}
+.tag-w{display:inline-block;padding:2px 8px;border-radius:50px;font-size:11px;background:#fde8d8;color:#7a3000}
+.tag-c{display:inline-block;padding:2px 8px;border-radius:50px;font-size:11px;background:#daeaf7;color:#003a6e}
+.tag-n{display:inline-block;padding:2px 8px;border-radius:50px;font-size:11px;background:var(--bg3);color:var(--txt2);border:0.5px solid var(--border2)}
+/* MIXER */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:7px;margin-bottom:1rem}
+.msw{border-radius:var(--rad-sm);cursor:pointer;overflow:hidden;border:2px solid transparent}
+.msw:hover{border-color:var(--border2)}
+.msw.sel{border-color:var(--txt)}
+.msw-color{height:50px}
+.msw-name{font-size:10px;text-align:center;padding:3px 2px;color:var(--txt2);line-height:1.3;background:var(--bg2)}
+.mresult{display:none;background:var(--bg3);border-radius:var(--rad);padding:1.25rem;margin-bottom:.875rem}
+.mresult.on{display:block}
+.rsteps{display:flex;flex-direction:column;gap:.5rem;margin-top:.65rem}
+.rstep{display:flex;align-items:flex-start;gap:.65rem}
+.rdot{width:26px;height:26px;border-radius:6px;flex-shrink:0;margin-top:1px;border:0.5px solid rgba(0,0,0,.12)}
+.rtext{font-size:13px;line-height:1.5;color:var(--txt)}
+.rsub{font-size:11px;color:var(--txt2)}
+.mtip{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad-sm);padding:.65rem .85rem;margin-top:.65rem;font-size:12px;line-height:1.65;color:var(--txt2)}
+.pnote{background:#fffbf0;border:0.5px solid #d8c860;border-radius:var(--rad-sm);padding:.65rem .85rem;font-size:12px;line-height:1.65;color:#5a4a00;margin-top:.65rem}
+/* CONCEPTS */
+.cblock{margin-bottom:.875rem}
+.chd{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:.85rem 1.25rem;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad)}
+.chd.open{border-radius:var(--rad) var(--rad) 0 0;border-bottom-color:transparent}
+.chtitle{font-size:14px;font-weight:500;color:var(--txt)}
+.chchev{font-size:11px;color:var(--txt2);transition:transform .2s;display:inline-block}
+.chchev.open{transform:rotate(180deg)}
+.cbody{display:none;background:var(--bg2);border:0.5px solid var(--border);border-top:none;border-radius:0 0 var(--rad) var(--rad);padding:1.25rem}
+.cbody.on{display:block}
+.cexplain{font-size:13px;line-height:1.8;color:var(--txt2);margin-bottom:.875rem}
+.cexplain b{color:var(--txt);font-weight:500}
+/* TOOLS — sub-tabs */
+.stabs{display:flex;gap:6px;margin-bottom:1.5rem;border-bottom:0.5px solid var(--border);padding-bottom:0}
+.stab{padding:8px 16px;border:none;background:none;font-size:13px;cursor:pointer;color:var(--txt2);border-bottom:2px solid transparent;margin-bottom:-0.5px}
+.stab:hover{color:var(--txt)}
+.stab.on{color:var(--txt);font-weight:500;border-bottom-color:var(--txt)}
+.sub-section{display:none}
+.sub-section.on{display:block}
+/* PALETTE BUILDER */
+.pigment-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-bottom:1rem}
+.pigment-chip{border-radius:var(--rad-sm);overflow:hidden;cursor:pointer;border:2px solid transparent;position:relative}
+.pigment-chip:hover{border-color:var(--border2)}
+.pigment-chip.sel{border-color:var(--txt)}
+.pigment-chip.sel::after{content:'✓';position:absolute;top:4px;right:5px;font-size:11px;color:#fff;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.chip-color{height:48px}
+.chip-name{font-size:10px;text-align:center;padding:3px 3px 4px;color:var(--txt2);line-height:1.3;background:var(--bg2)}
+.pb-result{display:none;margin-top:.5rem}
+.pb-result.on{display:block}
+.pb-recipe-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.25rem;margin-bottom:.75rem}
+.pb-target{display:flex;align-items:center;gap:10px;margin-bottom:.75rem}
+.pb-target-dot{width:36px;height:36px;border-radius:6px;flex-shrink:0;border:0.5px solid rgba(0,0,0,.1)}
+.pb-target-name{font-size:14px;font-weight:500}
+.pb-target-sub{font-size:11px;color:var(--txt2);margin-top:1px}
+.pb-steps{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.65rem}
+.pb-step{display:flex;align-items:center;gap:.6rem;font-size:12px}
+.pb-dot{width:20px;height:20px;border-radius:4px;flex-shrink:0;border:0.5px solid rgba(0,0,0,.1)}
+.pb-tip{font-size:11px;color:var(--txt2);line-height:1.65;padding:.5rem .75rem;background:var(--bg3);border-radius:var(--rad-sm)}
+.pb-warn{background:#fff8f0;border:0.5px solid #e8c870;border-radius:var(--rad-sm);padding:.65rem .85rem;font-size:12px;color:#6a4400;margin-bottom:.75rem}
+.pb-empty{text-align:center;padding:2rem;color:var(--txt2);font-size:13px}
+/* GLOSSARY */
+.gloss-search{width:100%;padding:10px 14px;border:0.5px solid var(--border2);border-radius:var(--rad-sm);font-size:14px;background:var(--bg2);color:var(--txt);margin-bottom:1rem;outline:none}
+.gloss-search:focus{border-color:var(--txt)}
+.gloss-filters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1rem}
+.gf{padding:4px 10px;border:0.5px solid var(--border2);background:none;border-radius:50px;font-size:11px;cursor:pointer;color:var(--txt2)}
+.gf.on{background:var(--txt);color:var(--bg2);border-color:transparent}
+.gloss-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:480px){.gloss-grid{grid-template-columns:1fr}}
+.gt{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.1rem;display:flex;flex-direction:column;gap:.5rem}
+.gt-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem}
+.gt-word{font-size:14px;font-weight:500;color:var(--txt)}
+.gt-cat{font-size:10px;padding:2px 7px;border-radius:50px;border:0.5px solid var(--border2);color:var(--txt2);white-space:nowrap;flex-shrink:0}
+.gt-def{font-size:12px;color:var(--txt2);line-height:1.7}
+.gt-vis{margin-top:2px;border-radius:6px;overflow:hidden;height:28px;display:flex}
+.gt-ex{font-size:11px;color:var(--txt3);font-style:italic;border-left:2px solid var(--border2);padding-left:8px;margin-top:2px}
+.gloss-none{text-align:center;padding:2rem;color:var(--txt2);font-size:13px;grid-column:1/-1}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-logo">Color Fundamentals</span>
+  <div class="nav-links">
+    <button class="nl on" onclick="go('hero',this)">Home</button>
+    <button class="nl" onclick="go('wheel',this)">Wheel</button>
+    <button class="nl" onclick="go('mixer',this)">Mixer</button>
+    <button class="nl" onclick="go('concepts',this)">Concepts</button>
+    <button class="nl" onclick="go('tools',this)">Tools</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="on" id="s-hero">
+  <div class="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-content">
+      <p class="eyebrow">Oil painting · RYB color theory · Interactive</p>
+      <h1 class="hero-title">Understanding color<br>through interaction</h1>
+      <p class="hero-sub">A painter's guide to hue, harmony, mixing, and value — built on traditional RYB color theory and real oil paint pigments.</p>
+      <div class="cta-row">
+        <button class="btn-p" onclick="go('wheel',document.querySelectorAll('.nl')[1])">Open color wheel</button>
+        <button class="btn-o" onclick="go('mixer',document.querySelectorAll('.nl')[2])">Mix a color</button>
+      </div>
+    </div>
+    <div class="scroll-hint"><div class="scroll-line"></div><span>Explore</span></div>
+  </div>
+</section>
+
+<!-- WHEEL -->
+<section id="s-wheel">
+  <div class="page">
+    <div class="page-title">Interactive color wheel</div>
+    <p class="page-sub">Built on the RYB pigment model painters use — not digital RGB. Drag the ring to set your base hue, then choose a harmony type.</p>
+    <div class="wlayout">
+      <div class="wcard">
+        <div class="clabel" style="align-self:flex-start">RYB pigment wheel</div>
+        <canvas id="wheel" width="240" height="240"></canvas>
+        <div style="font-size:11px;color:var(--txt2);text-align:center">Drag the colored ring to choose hue</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <div class="card">
+          <div class="clabel">Harmony type</div>
+          <div class="hpills" id="hpills">
+            <button class="hp on" onclick="setH('complementary',this)">Complementary</button>
+            <button class="hp" onclick="setH('analogous',this)">Analogous</button>
+            <button class="hp" onclick="setH('triadic',this)">Triadic</button>
+            <button class="hp" onclick="setH('tetradic',this)">Tetradic</button>
+            <button class="hp" onclick="setH('split',this)">Split-comp</button>
+            <button class="hp" onclick="setH('square',this)">Square</button>
+          </div>
+          <div class="desc-box" id="hdesc">Two colors directly opposite on the wheel. Maximum contrast — each makes the other appear more intense. Use one as dominant (about 70%) and the other as a vibrant accent.</div>
+          <div class="clabel">Generated palette</div>
+          <div class="sw-row" id="wswatches"></div>
+          <div class="igrid" id="winfo"></div>
+          <button class="sm-btn" onclick="copyPal()">Copy hex values</button>
+          <div class="confirm-txt" id="wconfirm"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MIXER -->
+<section id="s-mixer">
+  <div class="page">
+    <div class="page-title">Oil paint color mixer</div>
+    <p class="page-sub">Click any target color to see the exact oil paint recipe — real pigment names, proportions, and professional mixing tips.</p>
+    <div class="card">
+      <div class="clabel">Choose a target color</div>
+      <div class="mgrid" id="mixerGrid"></div>
+    </div>
+    <div class="mresult" id="mixResult">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem">
+        <div id="mSwatch" style="width:54px;height:54px;border-radius:8px;flex-shrink:0"></div>
+        <div><div id="mName" style="font-size:16px;font-weight:500;color:var(--txt)"></div><div id="mHex" style="font-size:12px;color:var(--txt2);font-family:monospace;margin-top:2px"></div></div>
+      </div>
+      <div class="clabel">Oil paint recipe</div>
+      <div class="rsteps" id="rSteps"></div>
+      <div class="mtip" id="mTip"></div>
+      <div class="mtip" id="mNote" style="display:none;margin-top:6px;border-left:3px solid #d4a820;padding-left:10px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPTS -->
+<section id="s-concepts">
+  <div class="page">
+    <div class="page-title">Color concepts for painters</div>
+    <p class="page-sub">Aligned to your course syllabus — Weeks 1–16. Click any concept to expand. Each includes a visual demo, detailed explanation, and a painter-specific note tied to assignments.</p>
+    <div id="conceptCont"></div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="s-tools">
+  <div class="page">
+    <div class="page-title">Tools</div>
+    <p class="page-sub">Two practical tools for your studio work and study.</p>
+    <div class="stabs">
+      <button class="stab on" onclick="switchTab('palette',this)">Palette builder</button>
+      <button class="stab" onclick="switchTab('glossary',this)">Visual glossary</button>
+    </div>
+
+    <!-- PALETTE BUILDER -->
+    <div class="sub-section on" id="sub-palette">
+      <div class="card">
+        <div class="clabel">Step 1 — select the pigments you own</div>
+        <p style="font-size:12px;color:var(--txt2);margin-bottom:.875rem;line-height:1.65">Check off every tube on your palette. The builder will only show recipes that are achievable with what you have.</p>
+        <div class="pigment-grid" id="pigmentGrid"></div>
+        <div style="display:flex;gap:8px;margin-top:.5rem">
+          <button class="sm-btn" style="width:auto;padding:6px 16px" onclick="selectAllPigments()">Select all</button>
+          <button class="sm-btn" style="width:auto;padding:6px 16px" onclick="clearAllPigments()">Clear all</button>
+          <span id="pbCount" style="font-size:12px;color:var(--txt2);align-self:center;margin-left:4px"></span>
+        </div>
+      </div>
+      <div class="pb-result" id="pbResult">
+        <div class="clabel" style="margin-bottom:.75rem">Step 2 — recipes you can mix right now</div>
+        <div id="pbRecipes"></div>
+      </div>
+      <div style="text-align:center;padding:1.5rem 0;color:var(--txt2);font-size:13px" id="pbPrompt">Select your pigments above to see what you can mix.</div>
+    </div>
+
+    <!-- GLOSSARY -->
+    <div class="sub-section" id="sub-glossary">
+      <input class="gloss-search" id="glossSearch" placeholder="Search terms — e.g. chroma, glaze, impasto…" oninput="filterGloss()">
+      <div class="gloss-filters" id="glossFilters"></div>
+      <div class="gloss-grid" id="glossGrid"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+// RYB to HSL mapping
+const RYB=[0,0,15,8,30,17,45,26,60,34,75,41,90,48,105,54,120,60,135,75,150,90,165,105,180,120,195,135,210,150,225,165,240,180,255,194,270,208,285,222,300,236,315,248,330,256,345,264,360,360];
+function rybH(r){r=((r%360)+360)%360;for(let i=0;i<RYB.length-2;i+=2){const r0=RYB[i],h0=RYB[i+1],r1=RYB[i+2],h1=RYB[i+3];if(r>=r0&&r<=r1){const t=(r-r0)/(r1-r0);return Math.round(h0+t*(h1-h0))}}return r}
+function hs(h,s,l){return`hsl(${Math.round(h)},${Math.round(s)}%,${Math.round(l)}%)`}
+function toHex(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1))),x=v=>Math.round(v*255).toString(16).padStart(2,'0');return'#'+x(f(0))+x(f(8))+x(f(4))}
+function wc(h){return(h>=0&&h<60)||h>=300?'warm':h>=150&&h<270?'cool':'neutral'}
+
+const HDESCS={
+  complementary:'Two colors directly opposite on the wheel. Maximum contrast — each makes the other appear more vivid and intense. Use one as dominant (~70%) and the other as a small accent.',
+  analogous:'Three to five adjacent hues on the wheel. Natural and unified — like a sunset or forest scene. Choose one dominant hue; let the others support it in smaller areas.',
+  triadic:'Three colors equally spaced at 120°. Vibrant but balanced. Reduce saturation of two colors and let one lead. Great for bold, energetic compositions.',
+  tetradic:'Four colors forming two complementary pairs. Very rich palette but challenging to balance — let one color dominate strongly; use the others sparingly.',
+  split:'Your base hue plus the two colors flanking its complement. Softer than straight complementary but still dynamic. Very versatile for portraits and landscapes.',
+  square:'Four colors evenly spaced at 90°. Symmetrical and challenging to balance. Rely on tonal variation and unequal areas to unify the scheme.'
+};
+const HOFF={complementary:[0,180],analogous:[0,-30,30,-60,60],triadic:[0,120,240],tetradic:[0,90,180,270],split:[0,150,210],square:[0,90,180,270]};
+let bRYB=10,harm='complementary',selSw=0,pal=[];
+
+function mkPal(){return(HOFF[harm]||[0]).map(o=>{const r=(bRYB+o+360)%360,hh=rybH(r);return{r,hh,hex:toHex(hh,78,52)}})}
+
+function renderWheel(){
+  pal=mkPal();
+  const sw=document.getElementById('wswatches');sw.innerHTML='';
+  pal.forEach((c,i)=>{
+    const wrap=document.createElement('div');
+    const d=document.createElement('div');d.className='sw'+(i===selSw?' sel':'');d.style.background=hs(c.hh,78,52);
+    d.onclick=()=>{selSw=i;renderWheel()};
+    const lb=document.createElement('div');lb.className='sw-hex';lb.textContent=c.hex.toUpperCase();
+    wrap.appendChild(d);wrap.appendChild(lb);sw.appendChild(wrap);
+  });
+  const s=pal[selSw]||pal[0];
+  const inf=document.getElementById('winfo');inf.innerHTML='';
+  [{l:'HEX',v:s.hex.toUpperCase()},{l:'RYB hue',v:s.r+'°'},{l:'HSL hue',v:s.hh+'°'},{l:'Temperature',v:`<span class="${wc(s.hh)==='warm'?'tag-w':wc(s.hh)==='cool'?'tag-c':'tag-n'}">${wc(s.hh)}</span>`}].forEach(x=>{
+    const c=document.createElement('div');c.className='ic';
+    c.innerHTML=`<div class="ic-lbl">${x.l}</div><div class="ic-val">${x.v}</div>`;
+    inf.appendChild(c);
+  });
+  drawWheelCanvas();
+}
+
+function drawWheelCanvas(){
+  const cv=document.getElementById('wheel'),ctx=cv.getContext('2d'),cx=120,cy=120,R=114,ri=46;
+  ctx.clearRect(0,0,240,240);
+  for(let i=0;i<360;i++){
+    const a1=(i/360)*Math.PI*2-Math.PI/2,a2=((i+1)/360)*Math.PI*2-Math.PI/2;
+    ctx.beginPath();ctx.moveTo(cx+ri*Math.cos(a1),cy+ri*Math.sin(a1));
+    ctx.arc(cx,cy,R,a1,a2);ctx.arc(cx,cy,ri,a2,a1,true);ctx.closePath();
+    ctx.fillStyle=hs(rybH(i),84,52);ctx.fill();
+  }
+  // inner circle white
+  ctx.beginPath();ctx.arc(cx,cy,ri,0,Math.PI*2);ctx.fillStyle='#ffffff';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,ri,0,Math.PI*2);ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=0.5;ctx.stroke();
+  // show current hue in center
+  ctx.beginPath();ctx.arc(cx,cy,28,0,Math.PI*2);ctx.fillStyle=hs(rybH(bRYB),78,52);ctx.fill();
+  // dots and lines
+  const rm=(ri+R)/2;
+  pal.forEach((c,i)=>{
+    const ang=(c.r-90)*Math.PI/180,x=cx+rm*Math.cos(ang),y=cy+rm*Math.sin(ang);
+    if(i>0){
+      const a0=(pal[0].r-90)*Math.PI/180;
+      ctx.beginPath();ctx.moveTo(cx+rm*Math.cos(a0),cy+rm*Math.sin(a0));ctx.lineTo(x,y);
+      ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1.5;ctx.setLineDash([3,4]);ctx.stroke();ctx.setLineDash([]);
+    }
+    ctx.beginPath();ctx.arc(x,y,i===selSw?12:9,0,Math.PI*2);ctx.fillStyle=hs(c.hh,78,52);ctx.fill();
+    ctx.strokeStyle=i===selSw?'#fff':'rgba(255,255,255,.8)';ctx.lineWidth=i===selSw?2.5:1.5;ctx.stroke();
+    if(i===selSw){
+      ctx.beginPath();ctx.arc(x,y,6,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.6)';ctx.fill();
+    }
+  });
+}
+
+function setH(t,btn){harm=t;selSw=0;document.querySelectorAll('.hp').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.getElementById('hdesc').textContent=HDESCS[t]||'';renderWheel()}
+function copyPal(){const t=pal.map(c=>c.hex.toUpperCase()).join('  ');navigator.clipboard&&navigator.clipboard.writeText(t);const el=document.getElementById('wconfirm');el.textContent='Copied: '+t;setTimeout(()=>el.textContent='',2500)}
+
+let wd=false;
+document.getElementById('wheel').addEventListener('mousedown',e=>{wd=true;wHit(e)});
+document.getElementById('wheel').addEventListener('mousemove',e=>{if(wd)wHit(e)});
+window.addEventListener('mouseup',()=>wd=false);
+document.getElementById('wheel').addEventListener('touchstart',e=>{e.preventDefault();wHit(e)},{passive:false});
+document.getElementById('wheel').addEventListener('touchmove',e=>{e.preventDefault();wHit(e)},{passive:false});
+
+function wHit(e){
+  const cv=document.getElementById('wheel'),r=cv.getBoundingClientRect();
+  const cx=(e.touches?e.touches[0].clientX:e.clientX),cy2=(e.touches?e.touches[0].clientY:e.clientY);
+  const x=(cx-r.left)*(240/r.width)-120,y=(cy2-r.top)*(240/r.height)-120;
+  const d=Math.sqrt(x*x+y*y);if(d<46||d>114)return;
+  let a=Math.atan2(y,x)*180/Math.PI+90;if(a<0)a+=360;
+  bRYB=Math.round(a);selSw=0;renderWheel();
+}
+
+// MIXER DATA
+const COLORS=[
+  {name:'Cadmium red',hex:'#d42b1e',recipe:[{p:'Cadmium Red Medium',h:'#d42b1e',a:'Straight from tube'}],tip:'Classic warm red — opaque and high chroma. The go-to red for pure reds and warm skin tones. Cadmium pigments are toxic; wash hands thoroughly.',note:''},
+  {name:'Alizarin crimson',hex:'#7d1535',recipe:[{p:'Alizarin Crimson',h:'#7d1535',a:'Straight from tube'}],tip:'Cool transparent red with a violet bias. Excellent for glazing and mixing clean purples. Prone to fading over decades — use Permanent Alizarin Crimson (PR177) for archival work.',note:''},
+  {name:'Cadmium orange',hex:'#e05a18',recipe:[{p:'Cadmium Red Medium',h:'#d42b1e',a:'2 parts'},{p:'Cadmium Yellow Medium',h:'#e8c01a',a:'1 part'}],tip:'Or use tube Cadmium Orange directly. The mixed version is slightly earthier. Both work beautifully for sunlit foliage, warm light, and autumn landscapes.',note:''},
+  {name:'Yellow ochre',hex:'#c8902a',recipe:[{p:'Yellow Ochre',h:'#c8902a',a:'Straight from tube'}],tip:'Indispensable earth pigment. Extremely lightfast and permanent. Key for skin tones, landscape, wood, and stone. Mix with Titanium White for warm champagne and straw tones.',note:''},
+  {name:'Cadmium yellow',hex:'#e8c01a',recipe:[{p:'Cadmium Yellow Medium',h:'#e8c01a',a:'Straight from tube'}],tip:'Warm opaque yellow that sits at a naturally very high value (~8.5 on Munsell scale). Avoid mixing directly with Ultramarine Blue — it produces a dull, chalky green. Use Phthalo Blue for bright clean greens.',note:''},
+  {name:'Lemon yellow',hex:'#e8e040',recipe:[{p:'Lemon Yellow (Hansa Yellow)',h:'#e8e040',a:'Straight from tube'}],tip:'Cool yellow with a green bias. More transparent than Cadmium Yellow. Excellent for bright greens, spring foliage, and anywhere you need a clean, light yellow-green.',note:''},
+  {name:'Sap green',hex:'#3d6b1f',recipe:[{p:'Cadmium Yellow Medium',h:'#e8c01a',a:'2 parts'},{p:'Ultramarine Blue',h:'#2836a0',a:'1 part'}],tip:'More yellow = yellow-green (sunlit foliage). More blue = blue-green (cool shadows and deep water). Tube Sap Green is more transparent and often richer — useful for foliage glazes.',note:''},
+  {name:'Phthalo green',hex:'#1a6b50',recipe:[{p:'Phthalo Green',h:'#1a6b50',a:'Tiny amount — extremely powerful staining pigment'}],tip:'One matchhead-sized touch overwhelms large mixes. Use to push greens more intense or to deepen ocean blues. Almost always mixed with other pigments rather than used straight.',note:''},
+  {name:'Cerulean blue',hex:'#4aa8c8',recipe:[{p:'Cerulean Blue',h:'#4aa8c8',a:'Straight from tube'}],tip:'Cool opaque sky blue. Too chalky for glazing. Excellent for atmospheric skies, hazy distance, and cool highlights. Does not mix cleanly into purples — use Ultramarine for those.',note:''},
+  {name:'Ultramarine blue',hex:'#2836a0',recipe:[{p:'Ultramarine Blue',h:'#2836a0',a:'Straight from tube'}],tip:'Warm blue with a red bias — transparent and excellent for glazing. The most versatile blue in oil painting. Mix with Burnt Umber for rich, luminous darks. The foundation of the painter\'s mixed black.',note:''},
+  {name:'Prussian blue',hex:'#1a2e5a',recipe:[{p:'Prussian Blue',h:'#1a2e5a',a:'Straight from tube'}],tip:'Very powerful cool dark blue. Use sparingly — it dominates mixes easily. Excellent for deep oceans, night skies, and dark cool shadows. Mix with Burnt Sienna for rich deep neutrals.',note:''},
+  {name:'Violet / purple',hex:'#4b1a6e',recipe:[{p:'Alizarin Crimson',h:'#7d1535',a:'2 parts'},{p:'Ultramarine Blue',h:'#2836a0',a:'1 part'}],tip:'The trick is using COOL pigments on both sides. Cadmium Red (warm) + any blue = muddy maroon. Alizarin (cool, leans violet) + Ultramarine (warm blue, leans red) = clean purple. More Alizarin = warmer purple. More Ultramarine = cooler blue-violet.',note:''},
+  {name:'Burnt sienna',hex:'#8a3510',recipe:[{p:'Burnt Sienna',h:'#8a3510',a:'Straight from tube'}],tip:'Transparent warm earth — arguably the most versatile pigment on the palette. Essential for skin, wood, rust, and enriching shadows. Mix with Titanium White for beautiful salmon, terracotta, and warm flesh tones.',note:''},
+  {name:'Burnt umber',hex:'#4a2208',recipe:[{p:'Burnt Umber',h:'#4a2208',a:'Straight from tube'}],tip:'Cool dark earth, semi-transparent. The key ingredient in the painter\'s mixed black. Mix equal parts Burnt Umber + Ultramarine Blue for a rich, luminous dark. More umber = warmer black; more blue = cooler.',note:''},
+  {name:'Raw umber',hex:'#7a5c28',recipe:[{p:'Raw Umber',h:'#7a5c28',a:'Straight from tube'}],tip:'Cooler and less red than Burnt Umber. Excellent neutral for portrait underpaintings and Grisaille techniques. Mixes cleanly without shifting other colors too warm or cool.',note:''},
+  {name:'Orange (mixed)',hex:'#d4631a',recipe:[{p:'Cadmium Red Medium',h:'#d42b1e',a:'1 part'},{p:'Cadmium Yellow Medium',h:'#e8c01a',a:'1 part'}],tip:'Warm red + warm yellow = clean bright orange. Using Alizarin Crimson (cool red) + yellow gives a muted neutralized orange-brown instead. Always match temperature when mixing secondaries.',note:''},
+  {name:'Brown (warm)',hex:'#6b3010',recipe:[{p:'Cadmium Red Medium',h:'#d42b1e',a:'2 parts'},{p:'Cadmium Yellow Medium',h:'#e8c01a',a:'1 part'},{p:'Ultramarine Blue',h:'#2836a0',a:'Tiny touch — add last'}],tip:'Mix orange first (red + yellow), then add the smallest possible touch of its complement (blue) to knock back the vibrancy into an earthy brown. Stop before it turns gray — it happens very quickly.',note:'Brown is not a primary color. It is a neutralized orange or red. This is why painters say: to get brown, start with an orange and add a touch of the complement.'},
+  {name:'Rich black',hex:'#1a1410',recipe:[{p:'Burnt Umber',h:'#4a2208',a:'2 parts'},{p:'Ultramarine Blue',h:'#2836a0',a:'1 part'}],tip:'Far more luminous and lively than tube Ivory Black or Mars Black. More umber = warmer black for warm shadows. More ultramarine = cooler black for cool shadows. Vary the ratio across a painting to give life to the dark zones.',note:'Most professional oil painters avoid tube black as a mixing color — it tends to dull and deaden the pigments it is mixed with, producing lifeless, chalky tints.'},
+  {name:'Warm gray',hex:'#8a8070',recipe:[{p:'Burnt Umber',h:'#4a2208',a:'1 part'},{p:'Titanium White',h:'#f2f2ee',a:'4 parts'},{p:'Ultramarine Blue',h:'#2836a0',a:'Tiny touch to neutralize'}],tip:'Shift the value by adjusting the umber-to-white ratio. The touch of blue neutralizes the warm bias so it reads as a true gray rather than a tinted white.',note:''},
+  {name:'Cool gray',hex:'#7a8090',recipe:[{p:'Ultramarine Blue',h:'#2836a0',a:'1 part'},{p:'Titanium White',h:'#f2f2ee',a:'5 parts'},{p:'Burnt Umber',h:'#4a2208',a:'Tiny touch'}],tip:'More blue shifts it darker and cooler. The Burnt Umber prevents a chalky, artificial look — it grounds the gray so it reads as atmospheric rather than flat.',note:''},
+  {name:'Flesh tone — light',hex:'#d4956a',recipe:[{p:'Titanium White',h:'#f2f2ee',a:'4 parts'},{p:'Yellow Ochre',h:'#c8902a',a:'1 part'},{p:'Cadmium Red Medium',h:'#d42b1e',a:'Small touch'},{p:'Ultramarine Blue',h:'#2836a0',a:'Tiny touch to neutralize'}],tip:'A basic warm light skin tone. For cooler skin: swap Cadmium Red for Alizarin Crimson. For darker skin: drop the white dramatically and add more Burnt Sienna. Always neutralize slightly with the complement so skin reads as flesh, not paint.',note:'Shadow tones on skin are almost never a darker version of the light tone. They shift cooler and more violet — often toward Burnt Sienna or Alizarin. This warm light / cool shadow temperature reversal is what makes painted skin look luminous.'},
+];
+
+function buildMixer(){
+  const g=document.getElementById('mixerGrid');
+  COLORS.forEach((c,i)=>{
+    const d=document.createElement('div');d.className='msw';
+    d.innerHTML=`<div class="msw-color" style="background:${c.hex}"></div><div class="msw-name">${c.name}</div>`;
+    d.onclick=()=>showRecipe(i,d);g.appendChild(d);
+  });
+}
+
+function showRecipe(i,el){
+  document.querySelectorAll('.msw').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');
+  const c=COLORS[i],r=document.getElementById('mixResult');r.classList.add('on');
+  document.getElementById('mSwatch').style.background=c.hex;
+  document.getElementById('mName').textContent=c.name.charAt(0).toUpperCase()+c.name.slice(1);
+  document.getElementById('mHex').textContent=c.hex.toUpperCase();
+  const st=document.getElementById('rSteps');st.innerHTML='';
+  c.recipe.forEach(s=>{
+    const row=document.createElement('div');row.className='rstep';
+    row.innerHTML=`<div class="rdot" style="background:${s.h}"></div><div><div class="rtext">${s.p}</div><div class="rsub">${s.a}</div></div>`;
+    st.appendChild(row);
+  });
+  document.getElementById('mTip').textContent=c.tip;
+  const mn=document.getElementById('mNote');
+  if(c.note){mn.textContent=c.note;mn.style.display='block'}else mn.style.display='none';
+  r.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// CONCEPTS DATA — aligned to course syllabus
+const CONCEPTS=[
+  // Week 1
+  {w:'Week 1',t:'The nature of color — light, pigment, and perception',b:`<div class="cexplain"><b>What is color?</b> Color is not an intrinsic property of objects — it is the brain's interpretation of electromagnetic radiation. White light contains all visible wavelengths (~380–700nm). When light hits an object, some wavelengths are absorbed and others are reflected. The reflected wavelengths reach your eye and are perceived as color.<br><br><b>Two types of color mixing:</b><br>• <b>Additive mixing</b> (light): Red + Green + Blue = White. Used in screens and theatrical lighting. Adding light sources together moves toward white.<br>• <b>Subtractive mixing</b> (pigment): Mixing paints absorbs more wavelengths, moving toward black or gray. This is what painters do. Cyan + Magenta + Yellow = Black (in theory).<br><br><b>Color perception</b> is also biological. The eye has three types of cone cells — sensitive to long (red), medium (green), and short (blue) wavelengths. Simultaneous stimulation of all three = white. Deficiencies in any cone type produce color blindness.</div><div id="vd-physics"></div><div class="pnote">Painters work entirely in subtractive color mixing. The more pigments you combine, the more wavelengths get absorbed and the duller the result. This is why limiting your palette to 6–8 pigments produces cleaner, more luminous mixes than using 20.</div>`,draw:'physics'},
+  {w:'Week 1',t:'Color circles and systems — RYB, RGB, and CMYK',b:`<div class="cexplain">Different fields use different color models depending on their medium.<br><br><b>RYB (Red-Yellow-Blue)</b> — The traditional painters' wheel. Primaries are Red, Yellow, Blue. Secondaries: Orange (R+Y), Green (Y+B), Violet (R+B). This is what you use in oil painting. It is not perfectly accurate to physics but is highly useful for pigment mixing intuition.<br><br><b>RGB (Red-Green-Blue)</b> — The additive light model used by screens and digital tools. Mixing all three at full intensity produces white. Used by Adobe, cameras, and monitors. When you design digitally, you work in RGB.<br><br><b>CMYK (Cyan-Magenta-Yellow-Black)</b> — The subtractive model used in printing. It is more accurate to how pigment mixing actually works than RYB, which is why Cyan and Magenta (not red and blue) produce the cleanest purples and oranges in print.<br><br><b>Munsell System</b> — A perceptually uniform color system with three dimensions: Hue (color name), Value (lightness 0–10), and Chroma (intensity from 0 outward). Used for precise color notation in fine arts and industry.</div><div id="vd-systems"></div><div class="pnote">When you look at digital color tools, remember: RGB and RYB are different systems. The "opposite" of red in RGB is cyan; in RYB it is green. Use RYB for all painting decisions, RGB only when working digitally.</div>`,draw:'systems'},
+  // Week 2
+  {w:'Week 2',t:'Achromatic study — grays, value scales, and neutral painting',b:`<div class="cexplain">An <b>achromatic</b> study removes all color (hue) and works exclusively with black, white, and gray. This isolates value — the single most important structural element in any painting.<br><br><b>Why paint achromatic?</b> Because value does the heavy lifting in a painting. Edges, depth, form, light, shadow, drama — all of these are communicated by value alone. Color only intensifies what value establishes. A strong value structure can make a painting work. Weak values make a painting fall apart regardless of how beautiful the color is.<br><br><b>Mixing grays with oil paint:</b> Rather than using tube Gray, mix Titanium White + Ivory Black. Better still: mix Titanium White + Burnt Umber + Ultramarine Blue for a richer, more "painterly" gray with natural warmth or coolness you can control. Tube grays are often flat and chalky.<br><br><b>The grayscale exercise</b> (Week 2 assignment): Build a value scale from 1–9. Start with pure white (1 part) and pure black (1 part), then mix each subsequent step. The challenge is keeping each step perceptually equidistant — equal jumps between each tone.</div><div id="vd-achrom"></div><div class="pnote">Paint your setup in full achromatic gray first. Then, if you want to add color, do it as a second layer or second painting — keeping the value structure identical. This is how Old Masters used underpainting (grisaille): establish the structure in gray, then glaze color over it.</div>`,draw:'achrom'},
+  // Week 3
+  {w:'Week 3',t:'Color systems in depth — Itten, Munsell, and Ostwald',b:`<div class="cexplain">Three major color systems have shaped how artists and designers think about color:<br><br><b>Johannes Itten's Color Theory</b> (Bauhaus, 1961): Built on the RYB model. Itten described the seven color contrasts — hue, light-dark, cold-warm, complementary, simultaneous, saturation, and extension. His system emphasizes the expressive and psychological aspects of color. Highly influential in fine arts education.<br><br><b>Albert Munsell's System</b> (1905): A scientific, perceptually uniform system. Hue (H), Value (V), and Chroma (C) are measured independently on scales calibrated to how the eye actually perceives color. Notation: 5R 4/14 means Hue=5Red, Value=4, Chroma=14. Still used in industry, scientific color measurement, and fine arts color analysis.<br><br><b>Wilhelm Ostwald's System</b> (1917): Describes colors in terms of Full Color + White Content + Black Content. Every color = F + W + B. Emphasizes tints (color + white), shades (color + black), and tones (color + gray). Useful for understanding how to systematically modify a color.<br><br>Each system offers a different vocabulary. Itten = expressive contrast. Munsell = precise measurement. Ostwald = tint/shade/tone relationships.</div><div id="vd-systems2"></div><div class="pnote">For practical painting, Munsell's vocabulary is the most useful: when you say a color has "high chroma" everyone knows you mean vivid and saturated. When you say "value 3" everyone knows you mean a dark tone. Build this vocabulary — it makes critique and discussion much more precise.</div>`,draw:'systems2'},
+  // Week 4
+  {w:'Week 4',t:'Attributes of color — hue, value, saturation, tints, shades, and tones',b:`<div class="cexplain">Every color can be fully described by three attributes:<br><br><b>Hue</b> is the color name — red, yellow, blue, orange, violet. On the RYB wheel it is measured in degrees (0–360°).<br><br><b>Value</b> is lightness or darkness, completely independent of hue. The Munsell scale runs 0 (black) to 10 (white). Yellow is naturally a high-value color (~8). Violet is naturally a low-value color (~3). Honoring these "natural values" creates harmony; fighting them creates tension — use that intentionally, not by accident.<br><br><b>Saturation</b> (also called chroma or intensity) is how pure vs. grayed-down a color is. A fully saturated red is vivid fire-engine red. Reduce saturation by mixing in its complement (not black — black just darkens and deadens).<br><br><b>Tints, Shades, and Tones:</b><br>• <b>Tint</b> = Hue + White (moves toward lighter, more pastel)<br>• <b>Shade</b> = Hue + Black (moves toward darker; use sparingly in oil painting — black dulls)<br>• <b>Tone</b> = Hue + Gray (or Hue + complement) — moves toward more muted, complex color. Most colors in nature and great paintings are tones, not pure hues.</div><div id="vd-hsv"></div><div class="pnote">Most beginners over-saturate. Real-world colors — skin, foliage, stone, fabric — are almost always tones with moderate chroma. When a painting looks garish or fake, the saturation is almost always too high. Knock back intensity with a touch of the complement.</div>`,draw:'hsv'},
+  // Week 4 cont.
+  {w:'Week 4',t:'Value and saturation scales — building the full range',b:`<div class="cexplain">Painters must be able to systematically move through the full range of both value and saturation. Mixing these scales precisely trains your eye and hand simultaneously.<br><br><b>Value scale exercise</b>: Mix 9 even steps from pure white to pure black using only Titanium White and Ivory Black (or the mixed black: Burnt Umber + Ultramarine). Each step must be perceptually equal — equal visual jumps. Most students make the middle values too dark or too light. The mid-gray should match a 50% gray on screen.<br><br><b>Saturation scale exercise</b>: Pick any hue (e.g. Cadmium Red). Mix a scale from full-strength pure hue on one end to a neutral gray on the other. Do this by gradually adding the complement (Sap Green for red) rather than black. You should pass through a series of muted tones before reaching a neutral. Each step should be equal in its reduction of intensity.<br><br><b>Combined scale</b>: Build a grid — value on one axis (light to dark), saturation on the other (vivid to neutral). Every cell is a different combination. This is essentially what the Munsell "color solid" does in three dimensions.</div><div id="vd-scales"></div><div class="pnote">These scales are not just exercises — they are tools. Once you can mix any value and any saturation on demand, you can mix any color you see. The limitation stops being your eye and becomes your paint handling.</div>`,draw:'scales'},
+  // Week 5-6
+  {w:'Weeks 5–6',t:'Color interaction — simultaneous contrast and visual effects',b:`<div class="cexplain">The same color looks dramatically different depending on what surrounds it. This is called <b>simultaneous contrast</b>, and it governs all color perception.<br><br><b>Value contrast</b>: A gray on black looks lighter than the same gray on white.<br><b>Hue contrast</b>: An orange on a red background looks more yellow; the same orange on blue looks more red. The eye enhances contrast with neighbors — it always tries to push colors apart.<br><b>Saturation contrast</b>: A muted color placed on a neutral gray appears more vivid than the same color placed on a brightly saturated background.<br><b>Temperature contrast</b>: A warm color looks warmer when surrounded by cool; a cool color looks cooler when surrounded by warm.<br><br><b>Josef Albers</b> (Interaction of Color, 1963) dedicated his career to demonstrating these effects. His key finding: <b>one color can be made to look like two different colors simply by changing its context, with no mixing involved</b>. Conversely, two different colors can be made to look identical.<br><br><b>Practical application</b>: Never evaluate a mixed color on the palette. Hold it next to what it will sit beside in the painting. The only way to judge color correctly is in context.</div><div id="vd-simult"></div><div class="pnote">Albers said: "In visual perception a color is almost never seen as it really is — as it physically is. This fact makes color the most relative medium in art." Every color decision in your painting is a relational decision, not an absolute one.</div>`,draw:'simult'},
+  {w:'Weeks 5–6',t:'Color temperature — warm, cool, and the light-shadow rule',b:`<div class="cexplain"><b>Warm colors</b> — reds, oranges, yellows — feel like fire and sunlight. They appear to visually advance toward the viewer. <b>Cool colors</b> — blues, greens, violets — feel like sky and water. They appear to recede.<br><br>Temperature is always <b>relative</b>, never absolute. Cadmium Red is a warm red (leans orange). Alizarin Crimson is a cool red (leans violet). Ultramarine Blue is a warm blue (has a red bias). Cerulean is a cool blue (has a green bias). Phthalo Green is a cool green. Sap Green is warmer.<br><br><b>The light-shadow temperature rule</b>: Warm light source (sun, incandescent bulb) = cool shadows. Cool light source (overcast sky, north light) = warm shadows. This temperature reversal is what makes painted light feel real. If your lights and shadows are both warm, the painting feels flat. If the temperature shifts across the form, it feels like light is actually present.<br><br><b>In mixing</b>: To mix a clean secondary, match the biases. Clean orange = warm red (Cad Red) + warm yellow (Cad Yellow). Clean purple = cool red (Alizarin, leans violet) + warm blue (Ultramarine, leans red). Mismatched temperatures cancel each other toward gray.</div><div id="vd-temp"></div><div class="pnote">The line and color temperature assignment asks you to explore how temperature alone creates visual movement. A warm mark advances; a cool mark recedes. Try using temperature (not value) as your only tool for pushing and pulling space on the picture plane.</div>`,draw:'temp'},
+  // Week 7
+  {w:'Week 7',t:'Color materials — pigments, vehicles, and lightfastness',b:`<div class="cexplain">Understanding what oil paint is made of helps you make better decisions and avoid problems that only appear years later.<br><br><b>Pigment</b> is the colored particle — historically ground minerals, earths, or plant matter; today often synthetic. The pigment determines color, opacity/transparency, lightfastness, and tinting strength. Always check the pigment code on the tube label (e.g. PY35 = Pigment Yellow 35, cadmium yellow).<br><br><b>Vehicle (binder)</b> is the oil that suspends the pigment and dries to a film. Linseed oil is standard — it dries by oxidation (polymerization), not evaporation. This is why oil paint can take days to days to fully set. Safflower oil yellows less; walnut oil is an old masters' favorite.<br><br><b>Lightfastness</b> (ASTM ratings): I = excellent, II = very good, III = not lightfast. Alizarin Crimson (natural) is notoriously lightfast-poor — use Permanent Alizarin (PR177) instead. Most cadmiums, iron oxides, and modern synthetic pigments are excellent.<br><br><b>Opacity vs transparency</b>: Cadmiums are opaque; Alizarin, Phthalo Blue, and Burnt Sienna are transparent. Transparent pigments are for glazing (thin layers over dry paint). Opaque pigments are for direct opaque painting and final lights.</div><div id="vd-pigments"></div><div class="pnote">Read the tube label. "Hue" in a name (e.g. "Cadmium Red Hue") means the paint does NOT contain actual cadmium — it's a safer, cheaper substitute. Some hues perform similarly; some don't. Know what you're buying.</div>`,draw:'pigments'},
+  // Week 10-11
+  {w:'Weeks 10–11',t:'Elements and principles of design applied to color',b:`<div class="cexplain">Color decisions never exist in isolation — they always interact with the other elements and principles of visual design.<br><br><b>Elements that interact with color:</b><br>• <b>Line</b>: Warm lines advance, cool lines recede. Line weight and color temperature together control space.<br>• <b>Shape</b>: A shape's color determines whether it advances (warm, saturated) or recedes (cool, muted).<br>• <b>Texture</b>: Textured surfaces scatter light; flat surfaces reflect it. This affects perceived color temperature.<br>• <b>Space</b>: Atmospheric perspective is a color principle — cooler, lighter, more desaturated = greater apparent depth.<br><br><b>Principles that govern color use:</b><br>• <b>Dominance</b>: One color must lead. Equal amounts of two competing colors creates visual confusion.<br>• <b>Visual rhythm</b>: Repeating a color accent creates rhythm and movement across the composition.<br>• <b>Balance</b>: A small area of warm, saturated color can balance a large area of cool, muted color (asymmetrical color balance).<br>• <b>Unity</b>: Colors share a common undertone or value range, tying the composition together.<br>• <b>Variety</b>: Slight temperature or value variation prevents monotony within a dominant color area.</div><div id="vd-design"></div><div class="pnote">The Visual Rhythm assignment asks you to make color do compositional work — not just describe objects, but create movement and flow through the picture plane. Think of color as a directing force for the viewer's eye.</div>`,draw:'design'},
+  // Week 12
+  {w:'Week 12',t:'Color schemes and harmony — the six core schemes',b:`<div class="cexplain">A color scheme is a principled selection of hues from the color wheel. Each creates a different expressive quality.<br><br><b>Monochromatic</b>: One hue in multiple values and saturations. Extremely unified, serene, sometimes monotonous. Use tints, shades, and tones of a single color. Strong for mood-driven work.<br><br><b>Analogous</b>: 3–5 adjacent hues on the wheel. Natural and cohesive — like a sunset or autumn landscape. Choose one dominant hue; the others support it. Limit the range to avoid the scheme becoming too broad.<br><br><b>Complementary</b>: Two opposite hues. Maximum contrast, maximum energy. Most successful when one color dominates (70%) and the other serves as accent (30%). Equal amounts feel combative.<br><br><b>Split-complementary</b>: Your base hue plus the two hues flanking its complement. Softer than direct complementary but still dynamic. Very versatile for portraits and landscapes.<br><br><b>Triadic</b>: Three hues equally spaced at 120°. Vibrant and balanced. Works best when one hue dominates and the other two are kept lower in saturation.<br><br><b>Tetradic / Square</b>: Four hues at 90° intervals. Very rich but very difficult to balance. Requires strong value variation and one clearly dominant hue.</div><div id="vd-schemes"></div><div class="pnote">The Color Schemes assignment and Color Schemes Painting ask you to work within a chosen scheme rather than using whatever colors feel right intuitively. The discipline of the scheme forces compositional decisions that improve the work.</div>`,draw:'schemes'},
+  // Week 13
+  {w:'Week 13',t:'Designing with color — asymmetrical balance, depth, and dominance',b:`<div class="cexplain">Color is a compositional force, not just a description. Understanding how to use it deliberately is what separates design from decoration.<br><br><b>Asymmetrical color balance</b>: A small area of intense, warm, saturated color can visually balance a much larger area of cool, muted, dark color. This is because saturation and warmth have "visual weight." Think of a Rembrandt: a tiny highlight on a hand balances acres of dark background.<br><br><b>Illusion of depth</b>: Use atmospheric perspective principles deliberately — push foreground objects warmer, darker in shadow, more saturated, and sharper-edged. Push background objects cooler, lighter, more desaturated, softer-edged. Even when working flat (abstraction or still life), this creates spatial layering.<br><br><b>Value contrast as a focal point tool</b>: The area of highest value contrast in a composition is where the eye goes first. Place your most important element there. Reduce contrast everywhere else to direct attention.<br><br><b>Color dominance</b>: One color temperature (warm or cool) must dominate the overall painting. A painting that is 50% warm and 50% cool with no clear winner feels unresolved. Pick a side — then use the other as accent. This single decision often resolves color problems in a painting.</div><div id="vd-atm"></div><div class="pnote">The Illusion of Depth and Value Contrast assignments this week ask you to use color as a spatial tool. Test your work: if you convert to grayscale, does the depth still read? If not, you are relying on color to do the work that value should be doing.</div>`,draw:'atm'},
+  // Week 14
+  {w:'Week 14',t:'Expressive color — color beyond description',b:`<div class="cexplain">Expressive color means using color for emotional, psychological, or conceptual effect rather than to accurately describe observed reality.<br><br><b>Historical context:</b><br>• The <b>Fauves</b> (Matisse, Derain, Vlaminck, c.1905) used arbitrary, intensified color — trees painted red, sky painted green — to convey emotional intensity. They called it "wild beast" painting for a reason.<br>• <b>German Expressionists</b> (Kirchner, Nolde, Schmidt-Rottluff) used clashing, unnatural color to express anxiety, alienation, and spiritual urgency.<br>• <b>Rothko</b> used large fields of softly luminous color to create meditative, emotional experiences — color as pure sensation with no representational content.<br><br><b>How to use color expressively:</b><br>• Deliberately choose a color that contradicts the observed reality but amplifies the feeling (a violet shadow instead of a gray one; a crimson sky instead of a blue one).<br>• Use unexpected temperature: if the scene calls for warm, go cool. The deviation creates emotional dissonance.<br>• Push saturation beyond what is observed. Exaggerate temperature contrasts. Let color make a statement the subject alone cannot.</div><div id="vd-expressive"></div><div class="pnote">The Expressive Color assignment asks you to make the color choice carry the meaning. Ask yourself: what is this painting about emotionally? Then choose a color palette that embodies that emotion — regardless of what the subject actually looks like.</div>`,draw:'expressive'},
+  // Week 14/final
+  {w:'Week 14–16',t:'High key vs low key painting',b:`<div class="cexplain">A <b>high-key</b> painting uses values predominantly in the upper range (lights and mid-lights, roughly values 6–9). The overall feeling is airy, delicate, intimate, luminous — Berthe Morisot's domestic interiors, Renoir's garden scenes, a hazy morning landscape.<br><br>A <b>low-key</b> painting uses values predominantly in the lower range (darks and mid-darks, roughly values 1–4). The feeling is dramatic, mysterious, grave, powerful — Rembrandt's portrait lighting, Caravaggio's chiaroscuro, stormy seascapes.<br><br><b>The principle of dominance:</b> A painting does not need to use only lights or only darks — it just needs one register to clearly dominate. A single bright light in a low-key Rembrandt reads with extraordinary power precisely because the surrounding darkness makes it rare. A single dark accent in a high-key Morisot stops the eye and creates a focal point.<br><br><b>Executing a high-key painting in oil</b>: Your lightest mixes must be very close to Titanium White. Avoid black entirely — use Ultramarine or Burnt Umber for your darkest darks, which will still be relatively light. Keep chroma moderate — high-key paintings often benefit from slightly muted, harmonious color rather than full saturation.<br><br><b>Executing a low-key painting in oil</b>: Mix your darkest darks first (Burnt Umber + Ultramarine). The lightest light is your focal point — mix it with care and use it sparingly.</div><div id="vd-key"></div><div class="pnote">Before starting any painting, decide its key. This single decision — do I want a light painting or a dark painting? — will shape every color and value choice you make. Work within the key you've committed to, or the painting will feel tonally unresolved.</div>`,draw:'key'},
+  {w:'Weeks 5–6',t:'Optical mixing and broken color',b:`<div class="cexplain">When small separate strokes of different colors are placed side by side without blending, the eye mixes them at viewing distance. Blue and yellow strokes appear green. Red and white strokes appear pink. This is the foundation of <b>Pointillism</b> (Seurat, Signac, c.1886) and the broader Impressionist broken-color technique.<br><br><b>Why it produces more luminous results than physical mixing:</b> When pigments are physically mixed, each pigment absorbs (subtracts) some wavelengths — the more pigments mixed, the more light is absorbed, pulling toward gray or black. Optical mixing avoids this because each pigment reflects its own wavelengths independently. The eye perceives an averaged result without the absorption penalty.<br><br><b>Additive vs subtractive:</b> Optical mixing is closer to additive (light) mixing than physical pigment mixing — which is why Seurat's paintings shimmer with a kind of luminosity that direct mixing cannot achieve.<br><br><b>In practice:</b> Apply small, distinct strokes of two related colors. Do not blend them. The viewer's distance determines at what point optical fusion occurs — up close you see separate strokes; far away, a blended color. The painting effectively contains two different images depending on viewing distance.</div><div id="vd-optical"></div><div class="pnote">The Optical Mixture Design assignment asks you to create a color area — a green, a violet, a brown — using optical mixing alone, without physically blending those pigments on the palette. The result will look different from any single mixed color.</div>`,draw:'optical'},
+  {w:'Weeks 5–6',t:'Complementary color mixing — tints, shades, tones, and neutralizing',b:`<div class="cexplain">Complements sit directly opposite on the RYB wheel: <b>Red/Green, Orange/Blue, Yellow/Violet</b>.<br><br><b>Side by side:</b> Complements create maximum optical contrast — each makes the other appear more intense. This is simultaneous contrast in action. Orange next to blue looks more orange; blue next to orange looks more blue.<br><br><b>Mixed together:</b> Complements neutralize each other, producing a gray or brown. This is the most important principle in the complementary mixing assignment. By varying the proportion of the two complements, you can produce:<br>• The pure hue (100% one complement, 0% the other)<br>• A muted tone (mostly one complement + small touch of the other)<br>• A neutral gray-brown (roughly equal parts)<br>• The opposite muted tone (mostly the second complement + small touch of first)<br>• The pure opposite hue (100% other complement)<br><br><b>The complete mixing formula:</b><br>• To <b>lower saturation</b>: add a touch of the complement (not black)<br>• To <b>darken</b>: add a touch of complement first, then add a darker version of the hue<br>• To <b>lighten</b>: add a lighter version of the hue, or a touch of white<br>• <b>Tint</b> = hue + white<br>• <b>Shade</b> = hue + black (use sparingly — black deadens color)<br>• <b>Tone</b> = hue + gray, or hue + complement</div><div id="vd-comp"></div><div class="pnote">The Refresh Exercise on complementary colors, tints, shades, and tones asks you to mix a complete range through one complementary pair. Work slowly and deliberately — each step should be a conscious decision, not an accidental result.</div>`,draw:'comp'},
+  {w:'Final',t:'Painting white objects — color in light and shadow',b:`<div class="cexplain">White objects are not white. They are among the most challenging subjects precisely because students try to paint them with white — and the result looks like a blank canvas, not a solid object.<br><br><b>White objects have three zones:</b><br>• <b>Highlight</b>: The single brightest spot of direct light reflection. This may be close to pure white — but it is still the warmest or coolest version of white depending on the light source.<br>• <b>Light area</b>: The large illuminated surface. Contains the color temperature of the light source. Under warm incandescent light: slightly warm white (add a touch of Yellow Ochre or Cad Yellow to Titanium White). Under cool daylight: slightly cool white (add a touch of Cerulean or very small Ultramarine to white).<br>• <b>Shadow</b>: The darker area that reveals the object's form. This is where students consistently go wrong. Shadow on a white object is <b>not gray</b> — it is a cooler, more chromatic color. Under warm light, the shadow of a white object shifts toward violet-blue (the complement of the warm light). Often: Ultramarine + white + tiny Burnt Umber.<br><br><b>Reflected light</b>: The underside of white objects often picks up color from the surface they rest on. A white vase on a red tablecloth will have warm reflected light in the lower shadow zone.</div><div id="vd-white"></div><div class="pnote">Never use pure Titanium White for shadows on white objects. The shadow is never simply "white + black." It must contain color temperature — cooler and more chromatic than the light area — or the object will look flat and unconvincing.</div>`,draw:'white'},
+  {w:'Week 4 / Final',t:'Value contrast — the painter\'s primary tool',b:`<div class="cexplain">Value is the single most powerful element in painting. <b>Value contrast</b> — the degree of difference between light and dark in adjacent areas — controls where the eye goes, how deep space reads, and how dramatic or quiet a painting feels.<br><br><b>High contrast</b> (light next to dark) = visual weight and focus. The eye is magnetically drawn to high-contrast areas. Place your most important element where contrast is highest.<br><br><b>Low contrast</b> = softness, distance, atmosphere. Reduce contrast progressively as elements move toward the background or periphery. This creates depth without any other tool.<br><br><b>Simultaneous value contrast</b> (the value version of simultaneous color contrast): A mid-gray appears lighter on a dark background and darker on a light background. The same value reads differently depending on its neighbors — exactly like color.<br><br><b>Edges and value:</b> A hard edge where two very different values meet reads as a sharp, close, defined boundary. A soft edge (values blend) reads as soft, atmospheric, distant, or out of focus. Controlling edge quality is controlling value contrast over space.<br><br><b>The grayscale test:</b> Convert any painting image to grayscale. If the composition still reads clearly — if you can identify the focal point, the depth, the structure — the values are working. If everything flattens to a similar mid-gray, the values are too close and the composition will fail.</div><div id="vd-value"></div><div class="pnote">The Value Contrast assignment asks you to build a composition where value contrast, not color, does all the compositional work. Restrict yourself to three values — light, mid, dark — and create depth and focus using only their arrangement.</div>`,draw:'value'},
+];
+
+function drawCVis(id,type){
+  const el=document.getElementById(id);if(!el||el.dataset.drawn)return;el.dataset.drawn='1';
+  if(type==='hsv'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:.5rem">
+      <div><div style="display:flex;height:32px;border-radius:6px;overflow:hidden">${[0,30,60,90,120,150,180,210,240,270,300,330].map(h=>`<div style="flex:1;background:hsl(${h},80%,52%)"></div>`).join('')}</div><div style="font-size:11px;color:var(--txt2);text-align:center;margin-top:4px">Hue (color name)</div></div>
+      <div><div style="display:flex;height:32px;border-radius:6px;overflow:hidden">${[0,20,40,60,80,100].map(s=>`<div style="flex:1;background:hsl(30,${s}%,55%)"></div>`).join('')}</div><div style="font-size:11px;color:var(--txt2);text-align:center;margin-top:4px">Saturation (intensity)</div></div>
+      <div><div style="display:flex;height:32px;border-radius:6px;overflow:hidden">${[92,76,60,44,28,12].map(l=>`<div style="flex:1;background:hsl(30,80%,${l}%)"></div>`).join('')}</div><div style="font-size:11px;color:var(--txt2);text-align:center;margin-top:4px">Value (light/dark)</div></div>
+    </div>`;
+  }else if(type==='comp'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:.5rem">
+      ${[[0,165,'Red / Cyan-green'],[30,210,'Orange / Blue'],[60,240,'Yellow / Violet']].map(([h1,h2,lb])=>`<div><div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;height:48px;border-radius:6px;overflow:hidden"><div style="background:hsl(${h1},82%,50%)"></div><div style="background:hsl(${h2},75%,48%)"></div></div><div style="font-size:10px;color:var(--txt2);text-align:center;margin-top:4px">${lb}</div></div>`).join('')}
+    </div>`;
+  }else if(type==='temp'){
+    el.innerHTML=`<div style="display:flex;height:48px;border-radius:6px;overflow:hidden;margin-top:.5rem">${[0,12,24,36,50,65,80,100,120,150,180,200,220,240,260,280].map(h=>`<div style="flex:1;background:hsl(${h},80%,52%)"></div>`).join('')}</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--txt2);margin-top:4px"><span>Hot reds</span><span>Neutral greens</span><span>Cool blues/violets</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:.75rem">
+      ${[['Cool reds (violet bias)','Alizarin Crimson<br>Quinacridone Red'],['Warm reds (orange bias)','Cadmium Red Medium<br>Venetian Red'],['Warm blues (red bias)','Ultramarine Blue<br>Cobalt Blue'],['Cool blues (green bias)','Cerulean Blue<br>Phthalo Blue']].map(([t,n])=>`<div style="background:var(--bg3);border-radius:6px;padding:.5rem"><div style="font-size:11px;font-weight:500;margin-bottom:3px">${t}</div><div style="font-size:11px;color:var(--txt2)">${n}</div></div>`).join('')}
+    </div>`;
+  }else if(type==='value'){
+    el.innerHTML=`<div style="display:flex;gap:3px;height:48px;border-radius:6px;overflow:hidden;margin-top:.5rem">${[95,84,73,62,51,40,29,18,7].map((l,i)=>`<div style="flex:1;background:hsl(0,0%,${l}%)" title="Value ${9-i}"></div>`).join('')}</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--txt2);margin-top:4px"><span>9 — White</span><span>5 — Mid gray</span><span>1 — Black</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:.75rem">
+      <div><div style="display:flex;gap:2px;height:32px;border-radius:6px;overflow:hidden">${[88,80,72,64,56].map(l=>`<div style="flex:1;background:hsl(55,${80-l*.2}%,${l}%)"></div>`).join('')}</div><div style="font-size:10px;color:var(--txt2);margin-top:3px">Yellow — naturally high value (8–9)</div></div>
+      <div><div style="display:flex;gap:2px;height:32px;border-radius:6px;overflow:hidden">${[36,28,20,14,8].map(l=>`<div style="flex:1;background:hsl(270,55%,${l}%)"></div>`).join('')}</div><div style="font-size:10px;color:var(--txt2);margin-top:3px">Violet — naturally low value (2–3)</div></div>
+    </div>`;
+  }else if(type==='simult'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.5rem">
+      <div style="background:#303030;border-radius:6px;height:68px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;background:#888;border-radius:5px"></div></div>
+      <div style="background:#d8d8d8;border-radius:6px;height:68px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;background:#888;border-radius:5px"></div></div>
+    </div>
+    <div style="font-size:11px;color:var(--txt2);text-align:center;margin-top:5px;margin-bottom:.65rem">Both inner squares are identical (#888888) — the background shifts perceived value</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:#8b1a1a;border-radius:6px;height:68px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;background:#d4884c;border-radius:5px"></div></div>
+      <div style="background:#1a3d6b;border-radius:6px;height:68px;display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;background:#d4884c;border-radius:5px"></div></div>
+    </div>
+    <div style="font-size:11px;color:var(--txt2);text-align:center;margin-top:5px">Same orange on red (looks more yellow) vs on blue (looks more red-orange)</div>`;
+  }else if(type==='atm'){
+    el.innerHTML=`<div style="background:#b0c4d8;border-radius:6px;padding:.75rem;display:flex;align-items:flex-end;justify-content:center;gap:20px;height:100px;margin-top:.5rem">
+      <div style="text-align:center"><div style="width:28px;height:28px;border-radius:50%;background:#a5bece;margin:0 auto 4px"></div><div style="font-size:10px;color:rgba(255,255,255,.75)">Far</div></div>
+      <div style="text-align:center"><div style="width:40px;height:40px;border-radius:50%;background:#5a8a44;margin:0 auto 4px"></div><div style="font-size:10px;color:rgba(255,255,255,.85)">Mid</div></div>
+      <div style="text-align:center"><div style="width:58px;height:58px;border-radius:50%;background:#963214;margin:0 auto 4px"></div><div style="font-size:10px;color:rgba(255,255,255,.95)">Near</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--txt2);text-align:center;margin-top:5px">Background: cool, desaturated, soft. Foreground: warm, saturated, sharp-edged.</div>`;
+  }else if(type==='key'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.5rem">
+      <div><div style="height:68px;border-radius:6px;display:flex;gap:2px;overflow:hidden">${['hsl(30,40%,88%)','hsl(180,30%,86%)','hsl(310,28%,90%)','hsl(60,38%,84%)','hsl(210,32%,87%)'].map(c=>`<div style="flex:1;background:${c}"></div>`).join('')}</div><div style="font-size:11px;color:var(--txt2);margin-top:4px;text-align:center">High key — values 6–9<br>Morisot, Renoir style</div></div>
+      <div><div style="height:68px;border-radius:6px;display:flex;gap:2px;overflow:hidden">${['hsl(20,60%,16%)','hsl(200,50%,13%)','hsl(320,50%,18%)','hsl(80,45%,11%)','hsl(0,0%,7%)'].map(c=>`<div style="flex:1;background:${c}"></div>`).join('')}</div><div style="font-size:11px;color:var(--txt2);margin-top:4px;text-align:center">Low key — values 1–4<br>Rembrandt, Caravaggio style</div></div>
+    </div>`;
+  }else if(type==='physics'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.5rem">
+      <div><div style="font-size:11px;font-weight:500;margin-bottom:5px">Additive (light — RGB)</div><div style="height:60px;border-radius:6px;display:flex;gap:0;overflow:hidden;position:relative;background:#111">
+        <div style="position:absolute;top:10px;left:14px;width:36px;height:36px;border-radius:50%;background:rgba(255,0,0,.7)"></div>
+        <div style="position:absolute;top:10px;left:34px;width:36px;height:36px;border-radius:50%;background:rgba(0,255,0,.7)"></div>
+        <div style="position:absolute;top:10px;left:54px;width:36px;height:36px;border-radius:50%;background:rgba(0,80,255,.7)"></div>
+        <div style="position:absolute;top:22px;left:36px;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.9)"></div>
+      </div><div style="font-size:10px;color:var(--txt2);margin-top:3px;text-align:center">R+G+B light = white</div></div>
+      <div><div style="font-size:11px;font-weight:500;margin-bottom:5px">Subtractive (pigment — RYB)</div><div style="height:60px;border-radius:6px;background:#f8f5ee;display:flex;gap:0;overflow:hidden;position:relative">
+        <div style="position:absolute;top:10px;left:14px;width:36px;height:36px;border-radius:50%;background:rgba(210,40,30,.75)"></div>
+        <div style="position:absolute;top:10px;left:34px;width:36px;height:36px;border-radius:50%;background:rgba(240,200,10,.75)"></div>
+        <div style="position:absolute;top:10px;left:54px;width:36px;height:36px;border-radius:50%;background:rgba(30,60,180,.75)"></div>
+        <div style="position:absolute;top:24px;left:37px;width:10px;height:10px;border-radius:50%;background:rgba(40,30,20,.85)"></div>
+      </div><div style="font-size:10px;color:var(--txt2);margin-top:3px;text-align:center">R+Y+B pigment → dark brown/black</div></div>
+    </div>`;
+  }else if(type==='systems'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:.5rem">
+      ${[['RYB','Painters & fine arts','Red, Yellow, Blue','#d42b1e','#e8c01a','#2836a0'],['RGB','Screens & digital','Red, Green, Blue','#e83030','#30e830','#3060f0'],['CMYK','Print & press','Cyan, Magenta, Yellow','#18b0d0','#d018a0','#d0d020']].map(([name,use,primaries,c1,c2,c3])=>`<div style="background:var(--bg3);border-radius:6px;padding:.65rem"><div style="font-size:12px;font-weight:500;margin-bottom:3px">${name}</div><div style="font-size:10px;color:var(--txt2);margin-bottom:6px">${use}</div><div style="display:flex;gap:3px;height:20px">${[c1,c2,c3].map(c=>`<div style="flex:1;border-radius:3px;background:${c}"></div>`).join('')}</div><div style="font-size:10px;color:var(--txt2);margin-top:3px">${primaries}</div></div>`).join('')}
+    </div>`;
+  }else if(type==='systems2'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:.5rem">
+      <div style="background:var(--bg3);border-radius:6px;padding:.65rem"><div style="font-size:11px;font-weight:500;margin-bottom:4px">Itten — 7 contrasts</div><div style="font-size:10px;color:var(--txt2);line-height:1.7">Hue · Light-dark · Cold-warm · Complementary · Simultaneous · Saturation · Extension</div></div>
+      <div style="background:var(--bg3);border-radius:6px;padding:.65rem"><div style="font-size:11px;font-weight:500;margin-bottom:4px">Munsell — notation</div><div style="font-size:10px;color:var(--txt2);line-height:1.7">5R 4/14<br>Hue = 5Red<br>Value = 4<br>Chroma = 14</div></div>
+      <div style="background:var(--bg3);border-radius:6px;padding:.65rem"><div style="font-size:11px;font-weight:500;margin-bottom:4px">Ostwald — F+W+B</div><div style="font-size:10px;color:var(--txt2);line-height:1.7">Full color + White + Black = 100%<br>Tint: F+W<br>Shade: F+B<br>Tone: F+W+B</div></div>
+    </div>`;
+  }else if(type==='achrom'){
+    el.innerHTML=`<div style="margin-top:.5rem"><div style="font-size:11px;color:var(--txt2);margin-bottom:5px">9-step value scale — each step should be a perceptually equal jump</div><div style="display:flex;gap:3px;height:52px;border-radius:6px;overflow:hidden">${[95,84,73,62,51,40,29,18,7].map((l,i)=>`<div style="flex:1;background:hsl(0,0%,${l}%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px"><span style="font-size:9px;color:hsl(0,0%,${l>50?10:90}%)">${9-i}</span></div>`).join('')}</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--txt2);margin-top:4px"><span>White (9)</span><span>Mid gray (5)</span><span>Black (1)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:.75rem">
+      <div style="background:var(--bg3);border-radius:6px;padding:.5rem"><div style="font-size:11px;font-weight:500;margin-bottom:3px">Tube gray vs mixed gray</div><div style="font-size:11px;color:var(--txt2)">Tube = flat, chalky<br>Mixed (Umb+Ultra+White) = warm/cool control</div></div>
+      <div style="background:var(--bg3);border-radius:6px;padding:.5rem"><div style="font-size:11px;font-weight:500;margin-bottom:3px">The grisaille method</div><div style="font-size:11px;color:var(--txt2)">Paint full value structure in gray. Glaze color over dry paint. Old Masters' technique.</div></div>
+    </div></div>`;
+  }else if(type==='scales'){
+    el.innerHTML=`<div style="margin-top:.5rem"><div style="font-size:11px;color:var(--txt2);margin-bottom:5px">Saturation scale — full red to neutral gray using complement (green)</div><div style="display:flex;gap:3px;height:40px;border-radius:6px;overflow:hidden">${[[85,52],[82,45],[78,38],[72,30],[65,22],[55,15],[44,10],[32,8],[20,6]].map(([s,l])=>`<div style="flex:1;background:hsl(5,${s}%,${50+l/3}%)"></div>`).join('')}</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--txt2);margin-top:3px;margin-bottom:.65rem"><span>Full chroma</span><span>Muted tones</span><span>Neutral gray</span></div>
+    <div style="font-size:11px;color:var(--txt2);margin-bottom:5px">Value scale — same hue, light to dark</div>
+    <div style="display:flex;gap:3px;height:40px;border-radius:6px;overflow:hidden">${[92,80,68,56,44,32,20,12].map(l=>`<div style="flex:1;background:hsl(5,65%,${l}%)"></div>`).join('')}</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--txt2);margin-top:3px"><span>Tint (+ white)</span><span>Pure hue</span><span>Shade (+ black)</span></div></div>`;
+  }else if(type==='design'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.5rem">
+      <div><div style="font-size:11px;font-weight:500;margin-bottom:5px">Asymmetrical balance</div><div style="height:60px;border-radius:6px;display:flex;align-items:center;overflow:hidden;background:var(--bg3)"><div style="flex:4;height:100%;background:hsl(200,40%,38%)"></div><div style="flex:1;height:100%;background:hsl(20,80%,52%)"></div></div><div style="font-size:10px;color:var(--txt2);margin-top:3px">Small warm area = large cool area</div></div>
+      <div><div style="font-size:11px;font-weight:500;margin-bottom:5px">Visual rhythm with color</div><div style="height:60px;border-radius:6px;overflow:hidden;background:hsl(210,35%,82%);display:flex;align-items:flex-end;gap:0">
+        ${[20,45,30,50,25,48,22].map((h,i)=>`<div style="flex:1;height:${h}px;background:hsl(${i%2===0?20:210},${i%2===0?75:50}%,${i%2===0?52:45}%);margin:1px"></div>`).join('')}
+      </div><div style="font-size:10px;color:var(--txt2);margin-top:3px">Repeating warm accent creates rhythm</div></div>
+    </div>`;
+  }else if(type==='schemes'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:.5rem">
+      ${[['Monochromatic',[0,0,0,0,0,0].map((_,i)=>({h:5,s:70-i*8,l:30+i*10}))],['Analogous',[{h:5,s:75,l:50},{h:25,s:72,l:52},{h:45,s:70,l:52},{h:65,s:68,l:50}]],['Complementary',[{h:5,s:78,l:50},{h:5,s:78,l:50},{h:180,s:65,l:46},{h:180,s:65,l:46}]],['Split-comp',[{h:5,s:78,l:50},{h:145,s:60,l:46},{h:215,s:60,l:44}]],['Triadic',[{h:5,s:78,l:50},{h:125,s:65,l:46},{h:245,s:65,l:48}]],['Tetradic',[{h:5,s:78,l:50},{h:95,s:65,l:46},{h:185,s:65,l:46},{h:275,s:65,l:48}]]].map(([name,cols])=>`<div><div style="display:flex;gap:2px;height:38px;border-radius:6px;overflow:hidden">${cols.map(c=>`<div style="flex:1;background:hsl(${c.h},${c.s}%,${c.l}%)"></div>`).join('')}</div><div style="font-size:10px;color:var(--txt2);text-align:center;margin-top:3px">${name}</div></div>`).join('')}
+    </div>`;
+  }else if(type==='expressive'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.5rem">
+      <div><div style="font-size:11px;font-weight:500;margin-bottom:5px">Observed color (realistic)</div><div style="height:68px;border-radius:6px;display:flex;gap:2px;overflow:hidden">${['#6a9050','#c8c0a0','#8a7858','#d0c090','#4a6838'].map(c=>`<div style="flex:1;background:${c}"></div>`).join('')}</div><div style="font-size:10px;color:var(--txt2);margin-top:3px">Accurate — describes the subject</div></div>
+      <div><div style="font-size:11px;font-weight:500;margin-bottom:5px">Expressive color (Fauve)</div><div style="height:68px;border-radius:6px;display:flex;gap:2px;overflow:hidden">${['#c83020','#e8d010','#2828b0','#e86820','#1a9a40'].map(c=>`<div style="flex:1;background:${c}"></div>`).join('')}</div><div style="font-size:10px;color:var(--txt2);margin-top:3px">Amplified — conveys emotion over description</div></div>
+    </div>`;
+  }else if(type==='pigments'){
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:.5rem">
+      ${[['Opaque pigments (block light)','Titanium White · Cadmium Red/Yellow/Orange · Yellow Ochre · Cerulean Blue · Burnt Sienna'],['Transparent pigments (for glazing)','Alizarin Crimson · Phthalo Blue/Green · Ultramarine Blue · Raw/Burnt Umber · Viridian'],['Lightfast — ASTM I (excellent)','Titanium White · Cadmium series · Iron oxides · Ultramarine · Phthalo series'],['Lightfast issues','Alizarin Crimson (historical) — use Permanent Alizarin PR177 instead']].map(([t,n])=>`<div style="background:var(--bg3);border-radius:6px;padding:.65rem"><div style="font-size:11px;font-weight:500;margin-bottom:3px">${t}</div><div style="font-size:11px;color:var(--txt2)">${n}</div></div>`).join('')}
+    </div>`;
+  }else if(type==='white'){
+    el.innerHTML=`<div style="margin-top:.5rem"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:.65rem">
+      <div style="background:var(--bg3);border-radius:6px;padding:.65rem;text-align:center"><div style="width:40px;height:40px;border-radius:6px;background:#f8f5f0;border:0.5px solid var(--border);margin:0 auto 5px"></div><div style="font-size:11px;font-weight:500">Highlight</div><div style="font-size:10px;color:var(--txt2)">Warmest white<br>Closest to pure TW</div></div>
+      <div style="background:var(--bg3);border-radius:6px;padding:.65rem;text-align:center"><div style="width:40px;height:40px;border-radius:6px;background:#e8e4d8;border:0.5px solid var(--border);margin:0 auto 5px"></div><div style="font-size:11px;font-weight:500">Light area</div><div style="font-size:10px;color:var(--txt2)">TW + tiny Ochre<br>Matches light temp</div></div>
+      <div style="background:var(--bg3);border-radius:6px;padding:.65rem;text-align:center"><div style="width:40px;height:40px;border-radius:6px;background:#b8bcc8;border:0.5px solid var(--border);margin:0 auto 5px"></div><div style="font-size:11px;font-weight:500">Shadow</div><div style="font-size:10px;color:var(--txt2)">TW + Ultramarine<br>Cool, chromatic</div></div>
+    </div>
+    <div style="background:var(--bg3);border-radius:6px;padding:.65rem;font-size:11px;color:var(--txt2)">The shadow is <b>never</b> gray = white + black. It must shift cooler and more chromatic than the light area — otherwise the object reads as flat and unconvincing.</div></div>`;
+  }else if(type==='optical'){
+    const cv=document.createElement('canvas');cv.width=300;cv.height=80;
+    cv.style.cssText='border-radius:6px;width:100%;margin-top:.5rem;display:block';
+    el.appendChild(cv);
+    const ctx=cv.getContext('2d');
+    for(let i=0;i<900;i++){
+      const x=Math.random()*300,y=Math.random()*80;
+      ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);
+      ctx.fillStyle=i%2===0?(x<150?'#2040b0':'#d02020'):(x<150?'#e0cc10':'#f5f5f0');
+      ctx.fill();
+    }
+    el.insertAdjacentHTML('beforeend','<div style="font-size:11px;color:var(--txt2);margin-top:5px;text-align:center">Left: blue+yellow dots blend to green. Right: red+white blend to pink. Step back to see optical fusion.</div>');
+  }
+}
+
+function buildConcepts(){
+  const c=document.getElementById('conceptCont');
+  CONCEPTS.forEach((con,i)=>{
+    const b=document.createElement('div');b.className='cblock';
+    const wbadge=con.w?`<span style="font-size:10px;padding:2px 8px;border-radius:50px;background:var(--bg3);color:var(--txt2);border:0.5px solid var(--border2);margin-left:8px;font-weight:400;vertical-align:middle">${con.w}</span>`:'';
+    b.innerHTML=`<div class="chd" onclick="toggleC(${i})"><span class="chtitle">${con.t}${wbadge}</span><span class="chchev" id="chev${i}">&#9660;</span></div><div class="cbody" id="cbody${i}">${con.b}<div id="cvd${i}"></div></div>`;
+    c.appendChild(b);
+  });
+}
+function toggleC(i){
+  const body=document.getElementById('cbody'+i),chev=document.getElementById('chev'+i),hd=chev.closest('.chd');
+  const open=body.classList.contains('on');
+  body.classList.toggle('on',!open);hd.classList.toggle('open',!open);chev.classList.toggle('open',!open);
+  if(!open)setTimeout(()=>drawCVis('cvd'+i,CONCEPTS[i].draw),30);
+}
+
+// ── PALETTE BUILDER ───────────────────────────────────────────────
+const PIGMENTS=[
+  {id:'tw', name:'Titanium White',    hex:'#f2f2ee', group:'whites'},
+  {id:'iw', name:'Ivory Black',       hex:'#1c1a18', group:'blacks'},
+  {id:'cr', name:'Cadmium Red Med',   hex:'#d42b1e', group:'reds'},
+  {id:'ac', name:'Alizarin Crimson',  hex:'#7d1535', group:'reds'},
+  {id:'qr', name:'Quinacridone Red',  hex:'#a81840', group:'reds'},
+  {id:'co', name:'Cadmium Orange',    hex:'#e05a18', group:'oranges'},
+  {id:'cy', name:'Cadmium Yellow',    hex:'#e8c01a', group:'yellows'},
+  {id:'ly', name:'Lemon Yellow',      hex:'#e8e040', group:'yellows'},
+  {id:'yo', name:'Yellow Ochre',      hex:'#c8902a', group:'yellows'},
+  {id:'sg', name:'Sap Green',         hex:'#3d6b1f', group:'greens'},
+  {id:'pg', name:'Phthalo Green',     hex:'#1a6b50', group:'greens'},
+  {id:'vg', name:'Viridian',          hex:'#2a7860', group:'greens'},
+  {id:'cb', name:'Cerulean Blue',     hex:'#4aa8c8', group:'blues'},
+  {id:'ub', name:'Ultramarine Blue',  hex:'#2836a0', group:'blues'},
+  {id:'pb', name:'Prussian Blue',     hex:'#1a2e5a', group:'blues'},
+  {id:'ph', name:'Phthalo Blue',      hex:'#0a2870', group:'blues'},
+  {id:'co2',name:'Cobalt Blue',       hex:'#3060b0', group:'blues'},
+  {id:'dv', name:'Dioxazine Violet',  hex:'#4b1a6e', group:'violets'},
+  {id:'bs', name:'Burnt Sienna',      hex:'#8a3510', group:'earths'},
+  {id:'bu', name:'Burnt Umber',       hex:'#4a2208', group:'earths'},
+  {id:'ru', name:'Raw Umber',         hex:'#7a5c28', group:'earths'},
+  {id:'rs', name:'Raw Sienna',        hex:'#b87828', group:'earths'},
+];
+
+// Each recipe: {name, hex, needs:[pigment ids], steps:[{id,label,amount}], tip, note}
+const PB_RECIPES=[
+  {name:'Cadmium orange',hex:'#e05a18',needs:['cr','cy'],steps:[{id:'cr',label:'Cadmium Red Med',amount:'2 parts'},{id:'cy',label:'Cadmium Yellow',amount:'1 part'}],tip:'Or use tube Cadmium Orange. Mixing cad red + cad yellow gives a slightly earthier result. Both routes work for warm light and foliage.',note:''},
+  {name:'Bright green',hex:'#4a9a20',needs:['cy','ub'],steps:[{id:'cy',label:'Cadmium Yellow',amount:'2 parts'},{id:'ub',label:'Ultramarine Blue',amount:'1 part'}],tip:'More yellow = yellow-green (sunlit). More blue = deeper forest green. Avoid mixing Cad Yellow + Phthalo Blue directly — it can go very cold very fast.',note:''},
+  {name:'Vivid green',hex:'#1a8050',needs:['ly','pg'],steps:[{id:'ly',label:'Lemon Yellow',amount:'2 parts'},{id:'pg',label:'Phthalo Green',amount:'tiny touch'}],tip:'Phthalo Green is extremely powerful — start with a matchhead-sized amount. Add more yellow to push warmer, more phthalo for a deeper jewel green.',note:''},
+  {name:'Violet / purple',hex:'#4b1a6e',needs:['ac','ub'],steps:[{id:'ac',label:'Alizarin Crimson',amount:'2 parts'},{id:'ub',label:'Ultramarine Blue',amount:'1 part'}],tip:'Use cool pigments on both sides for a clean purple. Cadmium Red (warm) + any blue = muddy maroon. More Alizarin = warmer purple; more Ultramarine = blue-violet.',note:''},
+  {name:'Rich black',hex:'#1a1410',needs:['bu','ub'],steps:[{id:'bu',label:'Burnt Umber',amount:'2 parts'},{id:'ub',label:'Ultramarine Blue',amount:'1 part'}],tip:'Far more luminous than tube Ivory Black. More umber = warmer black for warm shadows. More ultramarine = cooler black for cool shadows. Vary the ratio to give life to dark areas.',note:'Avoid using Ivory Black as a mixing color — it deadens other pigments.'},
+  {name:'Warm brown',hex:'#6b3010',needs:['cr','cy','ub'],steps:[{id:'cr',label:'Cadmium Red Med',amount:'2 parts'},{id:'cy',label:'Cadmium Yellow',amount:'1 part'},{id:'ub',label:'Ultramarine Blue',amount:'tiny touch'}],tip:'Mix orange first (red+yellow), then add the tiniest touch of blue to knock back vibrancy into an earthy brown. Stop before it turns gray — it happens fast.',note:'Brown = neutralized orange. This is the only correct route — brown is not a primary color.'},
+  {name:'Warm brown (earth)',hex:'#7a4018',needs:['bs','yo'],steps:[{id:'bs',label:'Burnt Sienna',amount:'2 parts'},{id:'yo',label:'Yellow Ochre',amount:'1 part'}],tip:'A more muted, natural brown. Very useful for wood, soil, and landscape. Add a touch of Ultramarine to push it cooler or darker.',note:''},
+  {name:'Warm gray',hex:'#8a8070',needs:['tw','bu','ub'],steps:[{id:'bu',label:'Burnt Umber',amount:'1 part'},{id:'tw',label:'Titanium White',amount:'4 parts'},{id:'ub',label:'Ultramarine Blue',amount:'tiny touch'}],tip:'Adjust umber-to-white for value. The tiny blue touch neutralizes the warm bias so it reads as a true gray, not a tinted white.',note:''},
+  {name:'Cool gray',hex:'#7a8090',needs:['tw','ub','bu'],steps:[{id:'ub',label:'Ultramarine Blue',amount:'1 part'},{id:'tw',label:'Titanium White',amount:'5 parts'},{id:'bu',label:'Burnt Umber',amount:'tiny touch'}],tip:'More blue = darker and cooler. The Burnt Umber prevents a chalky, artificial look — it grounds the gray so it reads as atmospheric.',note:''},
+  {name:'Cerulean sky',hex:'#7ac8e0',needs:['cb','tw'],steps:[{id:'cb',label:'Cerulean Blue',amount:'1 part'},{id:'tw',label:'Titanium White',amount:'3 parts'}],tip:'Cerulean is opaque and chalky — perfect for clear blue skies. Add more white for a lighter sky near the horizon. Do not use for glazing.',note:''},
+  {name:'Deep ocean blue',hex:'#1a3060',needs:['pb','ub'],steps:[{id:'ub',label:'Ultramarine Blue',amount:'1 part'},{id:'pb',label:'Prussian Blue',amount:'1 part'}],tip:'Prussian Blue is very powerful — add gradually. This mix is excellent for deep water, dark night skies, and cool shadow zones. Add Burnt Sienna to neutralize slightly.',note:''},
+  {name:'Burnt sienna tint',hex:'#d08060',needs:['bs','tw'],steps:[{id:'bs',label:'Burnt Sienna',amount:'1 part'},{id:'tw',label:'Titanium White',amount:'3 parts'}],tip:'Produces beautiful terracotta, salmon, and warm flesh tones. A foundational mix for portrait work and warm skin in light.',note:''},
+  {name:'Flesh tone — light',hex:'#d4956a',needs:['tw','yo','cr','ub'],steps:[{id:'tw',label:'Titanium White',amount:'4 parts'},{id:'yo',label:'Yellow Ochre',amount:'1 part'},{id:'cr',label:'Cadmium Red Med',amount:'small touch'},{id:'ub',label:'Ultramarine Blue',amount:'tiny touch'}],tip:'A basic warm Caucasian light skin tone. Swap Cad Red for Alizarin for cooler skin. Reduce white and add more Burnt Sienna for darker skin tones.',note:'Shadow skin tones shift cooler and more violet — never just darken the light tone.'},
+  {name:'Flesh tone — light (alt)',hex:'#d49060',needs:['tw','bs','cr'],steps:[{id:'tw',label:'Titanium White',amount:'3 parts'},{id:'bs',label:'Burnt Sienna',amount:'1 part'},{id:'cr',label:'Cadmium Red Med',amount:'small touch'}],tip:'A simpler two-pigment flesh starting point. Burnt Sienna + white is a classic shortcut — adjust with tiny amounts of ochre or red.',note:''},
+  {name:'Muted olive green',hex:'#7a7a30',needs:['cy','ub','bs'],steps:[{id:'cy',label:'Cadmium Yellow',amount:'2 parts'},{id:'ub',label:'Ultramarine Blue',amount:'1 part'},{id:'bs',label:'Burnt Sienna',amount:'small touch'}],tip:'The Burnt Sienna warms and neutralizes the green, pushing it toward olive. Excellent for dry grass, late-summer foliage, and natural landscapes.',note:''},
+  {name:'Deep violet shadow',hex:'#301840',needs:['ub','ac','bu'],steps:[{id:'ac',label:'Alizarin Crimson',amount:'1 part'},{id:'ub',label:'Ultramarine Blue',amount:'2 parts'},{id:'bu',label:'Burnt Umber',amount:'small touch'}],tip:'A rich, dark violet for cool shadow zones, especially in portraits and fabric. The Burnt Umber grays it slightly so it reads as shadow rather than a bright accent.',note:''},
+  {name:'Sap green (mixed)',hex:'#3d6b1f',needs:['cy','pb'],steps:[{id:'cy',label:'Cadmium Yellow',amount:'3 parts'},{id:'pb',label:'Prussian Blue',amount:'1 part'}],tip:'Prussian Blue + Cadmium Yellow gives a rich, cool sap green. Use less prussian for a lighter, sunnier green. Warm with a touch of Yellow Ochre for autumn tones.',note:''},
+  {name:'Neutral dark',hex:'#303028',needs:['bu','ub','ac'],steps:[{id:'bu',label:'Burnt Umber',amount:'2 parts'},{id:'ub',label:'Ultramarine Blue',amount:'1 part'},{id:'ac',label:'Alizarin Crimson',amount:'tiny touch'}],tip:'The Alizarin lifts the black slightly toward a dark brown-violet. Excellent for shadows that need a hint of warmth without losing depth.',note:''},
+];
+
+let selectedPigments=new Set();
+
+function buildPaletteBuilder(){
+  const g=document.getElementById('pigmentGrid');
+  const groups={whites:'Whites & Blacks',blacks:'',reds:'Reds',oranges:'Oranges',yellows:'Yellows',greens:'Greens',blues:'Blues',violets:'Violets',earths:'Earth tones'};
+  let lastGroup='';
+  PIGMENTS.forEach(p=>{
+    if(p.group!==lastGroup&&groups[p.group]&&p.group!=='blacks'){
+      const lbl=document.createElement('div');
+      lbl.style.cssText='grid-column:1/-1;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--txt2);padding-top:.25rem';
+      lbl.textContent=groups[p.group];g.appendChild(lbl);lastGroup=p.group;
+    }
+    const chip=document.createElement('div');chip.className='pigment-chip';chip.id='chip-'+p.id;
+    chip.innerHTML=`<div class="chip-color" style="background:${p.hex}"></div><div class="chip-name">${p.name}</div>`;
+    chip.onclick=()=>togglePigment(p.id);
+    g.appendChild(chip);
+  });
+  updatePBCount();
+}
+
+function togglePigment(id){
+  if(selectedPigments.has(id))selectedPigments.delete(id);else selectedPigments.add(id);
+  document.getElementById('chip-'+id).classList.toggle('sel',selectedPigments.has(id));
+  updatePBCount();renderPBRecipes();
+}
+function selectAllPigments(){PIGMENTS.forEach(p=>{selectedPigments.add(p.id);document.getElementById('chip-'+p.id).classList.add('sel')});updatePBCount();renderPBRecipes()}
+function clearAllPigments(){PIGMENTS.forEach(p=>{selectedPigments.delete(p.id);document.getElementById('chip-'+p.id).classList.remove('sel')});updatePBCount();renderPBRecipes()}
+function updatePBCount(){const n=selectedPigments.size;document.getElementById('pbCount').textContent=n>0?n+' pigment'+(n===1?'':' s')+' selected':'';}
+
+function renderPBRecipes(){
+  const container=document.getElementById('pbRecipes');
+  const prompt=document.getElementById('pbPrompt');
+  const result=document.getElementById('pbResult');
+  container.innerHTML='';
+  if(selectedPigments.size===0){result.classList.remove('on');prompt.style.display='block';return;}
+  prompt.style.display='none';
+  const available=PB_RECIPES.filter(r=>r.needs.every(id=>selectedPigments.has(id)));
+  const missing=PB_RECIPES.filter(r=>!r.needs.every(id=>selectedPigments.has(id)));
+  result.classList.add('on');
+  if(available.length===0){
+    container.innerHTML=`<div class="pb-warn">No complete recipes available with your current selection. Try adding more pigments — most recipes need at least 2–3 tubes.</div>`;
+  } else {
+    const hdr=document.createElement('div');
+    hdr.innerHTML=`<div style="font-size:12px;color:var(--txt2);margin-bottom:.75rem">${available.length} recipe${available.length===1?'':'s'} achievable with your palette${missing.length>0?' · <span style="color:var(--txt3)">'+missing.length+' need additional pigments</span>':''}</div>`;
+    container.appendChild(hdr);
+    available.forEach(r=>{
+      const card=document.createElement('div');card.className='pb-recipe-card';
+      const steps=r.steps.map(s=>`<div class="pb-step"><div class="pb-dot" style="background:${PIGMENTS.find(p=>p.id===s.id)?.hex||'#888'}"></div><span><b>${s.label}</b> — ${s.amount}</span></div>`).join('');
+      card.innerHTML=`<div class="pb-target"><div class="pb-target-dot" style="background:${r.hex}"></div><div><div class="pb-target-name">${r.name}</div><div class="pb-target-sub">${r.steps.length} pigment${r.steps.length===1?'':'s'}</div></div></div><div class="pb-steps">${steps}</div><div class="pb-tip">${r.tip}</div>${r.note?`<div class="pb-tip" style="margin-top:6px;border-left:3px solid #d4a820;padding-left:10px">${r.note}</div>`:''}`;
+      container.appendChild(card);
+    });
+  }
+  if(missing.length>0&&available.length>0){
+    const sec=document.createElement('div');
+    sec.innerHTML=`<div style="font-size:12px;font-weight:500;margin:1.25rem 0 .65rem;color:var(--txt)">Recipes you're missing pigments for</div>`;
+    container.appendChild(sec);
+    missing.slice(0,6).forEach(r=>{
+      const missingIds=r.needs.filter(id=>!selectedPigments.has(id));
+      const missingNames=missingIds.map(id=>PIGMENTS.find(p=>p.id===id)?.name||id).join(', ');
+      const card=document.createElement('div');
+      card.style.cssText='background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--rad-sm);padding:.75rem 1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem';
+      card.innerHTML=`<div style="width:28px;height:28px;border-radius:5px;background:${r.hex};flex-shrink:0;border:0.5px solid rgba(0,0,0,.1)"></div><div><div style="font-size:13px;font-weight:500">${r.name}</div><div style="font-size:11px;color:var(--txt2);margin-top:2px">Still need: ${missingNames}</div></div>`;
+      container.appendChild(card);
+    });
+  }
+}
+
+// ── VISUAL GLOSSARY ────────────────────────────────────────────────
+const GLOSSARY=[
+  // Attributes
+  {word:'Hue',cat:'attribute',def:'The color name — red, yellow, blue, orange, violet. Measured in degrees (0–360°) around the color wheel. Hue alone does not tell you how light or vivid a color is.',ex:'Cadmium Red and Alizarin Crimson share the same general hue (red) but differ in temperature and saturation.',vis:[{h:0,s:82,l:52},{h:30,s:82,l:52},{h:60,s:82,l:52},{h:120,s:72,l:46},{h:200,s:75,l:48},{h:260,s:68,l:46},{h:300,s:72,l:48}]},
+  {word:'Value',cat:'attribute',def:'The lightness or darkness of a color, completely independent of its hue. The Munsell scale runs 0 (black) to 10 (white). Value is the most important attribute for creating convincing form and depth.',ex:'Yellow naturally sits near value 8–9. Violet naturally sits near value 2–3.',vis:[{h:50,s:0,l:95},{h:50,s:0,l:78},{h:50,s:0,l:60},{h:50,s:0,l:45},{h:50,s:0,l:30},{h:50,s:0,l:16},{h:50,s:0,l:7}]},
+  {word:'Saturation',cat:'attribute',def:'How pure or muted a color is. Also called chroma or intensity. A fully saturated red is vivid fire-engine red. Lower saturation by mixing in the complement — not black. Most colors in nature have moderate saturation.',ex:'"The foliage was a desaturated olive green, not a vivid chartreuse."',vis:[{h:5,s:90,l:50},{h:5,s:72,l:50},{h:5,s:54,l:50},{h:5,s:36,l:50},{h:5,s:18,l:50},{h:5,s:6,l:50}]},
+  {word:'Chroma',cat:'attribute',def:'Munsell\'s precise term for saturation — the colorfulness of a surface relative to a gray of equal value. Higher chroma = more vivid. In Munsell notation written as the third number: 5R 4/14 means chroma = 14.',ex:'A high-chroma red next to a low-chroma red makes the low-chroma version appear grayer.',vis:[{h:5,s:90,l:50},{h:5,s:65,l:50},{h:5,s:42,l:50},{h:5,s:20,l:50},{h:5,s:8,l:52}]},
+  {word:'Tint',cat:'attribute',def:'A color plus white. Tinting moves the color toward lighter, more pastel values while typically reducing saturation slightly. In oil painting: add Titanium White to a hue.',ex:'Cerulean Blue + Titanium White = a pale sky blue tint.',vis:[{h:210,s:75,l:48},{h:210,s:65,l:60},{h:210,s:55,l:70},{h:210,s:44,l:80},{h:210,s:32,l:88}]},
+  {word:'Shade',cat:'attribute',def:'A color plus black. Shading darkens a color but also dulls it — Ivory Black is a powerful mixer that can deaden other pigments. Prefer darkening with a darker version of the hue or its complement.',ex:'"Avoid shading skin tones with black — use Burnt Umber + Ultramarine for a richer dark."',vis:[{h:5,s:80,l:52},{h:5,s:72,l:42},{h:5,s:62,l:32},{h:5,s:50,l:22},{h:5,s:38,l:12}]},
+  {word:'Tone',cat:'attribute',def:'A color mixed with gray — or equivalently, a hue mixed with its complement. Tones are complex, muted, realistic colors. Most colors in fine art and nature are tones, not pure hues.',ex:'"Monet\'s water was not pure blue — it was a tone: blue shifted slightly toward gray-violet."',vis:[{h:200,s:72,l:48},{h:200,s:54,l:50},{h:200,s:36,l:52},{h:200,s:18,l:52},{h:200,s:8,l:54}]},
+  // Color relationships
+  {word:'Complementary',cat:'relationship',def:'Two colors sitting directly opposite each other on the RYB color wheel. Placed side by side they create maximum contrast — each makes the other appear more vivid. Mixed together they neutralize to gray or brown.',ex:'Red/Green · Orange/Blue · Yellow/Violet',vis:[{h:5,s:80,l:50},{h:5,s:80,l:50},{h:165,s:65,l:44},{h:165,s:65,l:44}]},
+  {word:'Analogous',cat:'relationship',def:'Three to five hues that are adjacent on the color wheel. Analogous schemes are harmonious and natural-looking. One hue should dominate; the others support.',ex:'Autumn landscape: red-orange, orange, yellow-orange — all within 60–90° of each other.',vis:[{h:5,s:78,l:50},{h:25,s:76,l:52},{h:45,s:74,l:52},{h:65,s:70,l:50}]},
+  {word:'Triadic',cat:'relationship',def:'Three hues equally spaced at 120° intervals on the color wheel. Vibrant and balanced. Best when one hue dominates strongly and the other two are kept lower in saturation.',ex:'Red, yellow, blue at full saturation — Mondrian used triadic primaries in his grid paintings.',vis:[{h:5,s:78,l:50},{h:125,s:66,l:46},{h:245,s:66,l:48}]},
+  {word:'Split-complementary',cat:'relationship',def:'A base hue plus the two hues on either side of its direct complement. Softer than a direct complementary pair but still dynamic and high-contrast.',ex:'Yellow-orange + blue-violet + blue-green. More complex than complementary, easier to balance.',vis:[{h:35,s:80,l:52},{h:215,s:65,l:46},{h:175,s:62,l:44}]},
+  {word:'Simultaneous contrast',cat:'relationship',def:'The visual phenomenon where a color appears different depending on what surrounds it. The eye continuously compares every color to its neighbors, enhancing differences. Discovered by Chevreul (1839); studied by Albers.',ex:'"The same gray square looks lighter on a dark background and darker on a light background."',vis:[{h:0,s:0,l:20},{h:0,s:0,l:50},{h:0,s:0,l:80},{h:0,s:0,l:50}]},
+  {word:'Optical mixing',cat:'relationship',def:'When small separate strokes of different colors are placed side by side, the eye blends them at a viewing distance. The result is often more luminous than physically mixing the same pigments on the palette.',ex:'Pointillism (Seurat): tiny dots of blue and yellow create optical green without any physical mixing.',vis:[{h:220,s:70,l:50},{h:220,s:70,l:50},{h:55,s:75,l:52},{h:55,s:75,l:52}]},
+  // Temperature
+  {word:'Color temperature',cat:'temperature',def:'Whether a color feels warm (reds, oranges, yellows) or cool (blues, greens, violets). Temperature is always relative — a color\'s temperature is judged against its neighbors. Warm colors advance visually; cool ones recede.',ex:'Ultramarine is a warm blue (leans red). Cerulean is a cool blue (leans green).',vis:[{h:5,s:80,l:52},{h:30,s:78,l:52},{h:55,s:76,l:54},{h:120,s:55,l:46},{h:200,s:70,l:48},{h:250,s:65,l:46}]},
+  {word:'Warm light / cool shadow',cat:'temperature',def:'The principle that warm light sources (sun, incandescent) produce cool shadows, and cool light sources (overcast sky, north window) produce warm shadows. This temperature reversal across a form is what makes painted light convincing.',ex:'Under golden sunlight: lights = warm yellow-orange, shadows = cool blue-violet.',vis:[{h:40,s:75,l:62},{h:40,s:65,l:55},{h:220,s:55,l:42},{h:220,s:62,l:34}]},
+  // Mixing
+  {word:'Neutralizing',cat:'mixing',def:'Reducing the saturation of a color by adding a small amount of its complement rather than adding black or gray. Neutralizing preserves value and warmth while lowering intensity. The key to mixing muted, naturalistic tones.',ex:'To mute Cadmium Red: add a tiny touch of Sap Green until the red becomes a terra-cotta brown.',vis:[{h:5,s:82,l:50},{h:5,s:60,l:50},{h:5,s:40,l:50},{h:5,s:22,l:50},{h:5,s:10,l:52}]},
+  {word:'Glazing',cat:'mixing',def:'Applying a thin, transparent layer of paint over a dry layer to modify its color. Glazing uses transparent pigments (Alizarin Crimson, Burnt Sienna, Phthalo Blue) thinned with medium. Old Masters used glazing over grisaille underpaintings.',ex:'A warm yellow glaze over a cool gray underpainting creates a rich, luminous golden tone.',vis:[{h:50,s:0,l:60},{h:50,s:0,l:60},{h:30,s:75,l:55,opacity:.4},{h:30,s:75,l:55}]},
+  {word:'Impasto',cat:'mixing',def:'Thick, textured paint application where brushstrokes remain visible and raised above the canvas surface. Associated with expressive painters — Van Gogh, Rembrandt (in lights), de Kooning. The physical texture interacts with light.',ex:'Van Gogh\'s swirling night sky was built entirely from thick, directional impasto strokes.',vis:[{h:200,s:60,l:44},{h:210,s:65,l:46},{h:225,s:62,l:42},{h:215,s:68,l:48}]},
+  {word:'Grisaille',cat:'mixing',def:'A monochromatic underpainting executed entirely in neutral grays or neutrals. Used to establish value structure before adding color glazes on top. Traditional Old Masters technique. Teaches painters to separate value decisions from color decisions.',ex:'"Paint the full value structure first in gray. Then glaze color over the dry underpainting."',vis:[{h:0,s:0,l:90},{h:0,s:0,l:70},{h:0,s:0,l:48},{h:0,s:0,l:28},{h:0,s:0,l:12}]},
+  {word:'Medium',cat:'mixing',def:'The liquid added to oil paint to alter its consistency, drying time, or finish. Linseed oil is standard. Liquin (alkyd) speeds drying. Stand oil creates a smooth, enamel-like finish. Turpentine or mineral spirits are solvents for thinning.',ex:'"Fat over lean" — early layers should be lean (thin, less oil); later layers can be fat (more oil).',vis:[]},
+  // Perception
+  {word:'Atmospheric perspective',cat:'perception',def:'The visual effect where distant objects appear cooler, lighter, less saturated, and with softer edges — caused by light scattering through atmosphere. Also called aerial perspective. Used to create the illusion of depth.',ex:'Mountains 20 miles away appear pale blue-gray, not green. The farther, the more desaturated and cool.',vis:[{h:200,s:18,l:75},{h:190,s:30,l:62},{h:100,s:45,l:52},{h:20,s:68,l:42},{h:10,s:80,l:36}]},
+  {word:'Value contrast',cat:'perception',def:'The degree of difference between light and dark in adjacent areas. High contrast draws the eye and creates focal points. Low contrast creates softness, distance, and atmosphere. The primary tool for controlling viewer attention.',ex:'"A single bright highlight on a very dark background reads with extraordinary power — Rembrandt knew this."',vis:[{h:30,s:0,l:90},{h:30,s:0,l:72},{h:30,s:0,l:52},{h:30,s:0,l:32},{h:30,s:0,l:14}]},
+  {word:'High key',cat:'perception',def:'A painting in which values cluster predominantly in the upper range (lights and mid-lights, values 6–9). The overall feeling is airy, luminous, delicate. Examples: Morisot, Renoir, Cassatt.',ex:'"Her painting used almost no darks — a high-key palette of soft pinks, lavenders, and creams."',vis:[{h:30,s:35,l:90},{h:180,s:28,l:88},{h:310,s:28,l:90},{h:60,s:32,l:87},{h:210,s:30,l:89}]},
+  {word:'Low key',cat:'perception',def:'A painting in which values cluster predominantly in the lower range (darks and mid-darks, values 1–4). Feeling is dramatic, heavy, mysterious. Examples: Rembrandt, Caravaggio, Velázquez.',ex:'"The portrait was almost entirely in shadow — a low-key work where the single lit face commanded everything."',vis:[{h:20,s:55,l:16},{h:200,s:45,l:13},{h:320,s:48,l:18},{h:80,s:42,l:11},{h:0,s:0,l:7}]},
+  {word:'Lost edge',cat:'perception',def:'An edge where two adjacent areas are so close in value or temperature that the boundary becomes soft, indistinct, or invisible. Lost edges create atmosphere, depth, and softness. Alternating found and lost edges makes a painting feel alive.',ex:'"The shadow side of the face dissolved into the dark background — a lost edge that created atmospheric depth."',vis:[{h:30,s:60,l:55},{h:30,s:50,l:50},{h:30,s:38,l:48},{h:30,s:25,l:46},{h:30,s:12,l:45}]},
+  // Systems
+  {word:'Munsell system',cat:'system',def:'A perceptually uniform color notation system (1905) with three independent dimensions: Hue (H), Value (V 0–10), and Chroma (C). Written as "5R 4/14" = Hue 5Red, Value 4, Chroma 14. Used in fine arts and industry for precise color communication.',ex:'"Yellow Ochre approximates 2.5Y 6/8 on the Munsell scale."',vis:[{h:55,s:65,l:68},{h:55,s:52,l:56},{h:55,s:38,l:45},{h:55,s:25,l:36}]},
+  {word:'RYB color model',cat:'system',def:'The traditional painters\' color model with Red, Yellow, and Blue as primaries. Secondaries: Orange (R+Y), Green (Y+B), Violet (R+B). Not perfectly accurate to physics but highly useful as a mixing intuition framework for oil painters.',ex:'"On the RYB wheel, the complement of red is green — which is why a touch of green neutralizes red."',vis:[{h:5,s:80,l:50},{h:50,s:80,l:52},{h:240,s:70,l:48},{h:30,s:78,l:52},{h:130,s:65,l:44},{h:270,s:65,l:46}]},
+  {word:'Additive mixing',cat:'system',def:'Mixing colored light — adding light sources together. Red + Green + Blue light = white. Used in screens, theatrical lighting, and digital displays. Mixing more light always moves toward white (brighter).',ex:'"Computer monitors use additive RGB mixing — the screen itself emits the light."',vis:[{h:0,s:90,l:50},{h:120,s:90,l:44},{h:240,s:85,l:52},{h:0,s:0,l:95}]},
+  {word:'Subtractive mixing',cat:'system',def:'Mixing pigments — each pigment absorbs (subtracts) certain wavelengths. Mixing more pigments absorbs more light, moving toward black or gray. This is what painters do. Mixing too many pigments creates mud.',ex:'"Every additional pigment in a mix absorbs more wavelengths — with enough pigments you get dark mud."',vis:[{h:5,s:78,l:50},{h:200,s:72,l:46},{h:5,s:30,l:35},{h:5,s:8,l:22}]},
+  {word:'CMYK',cat:'system',def:'Cyan, Magenta, Yellow, Key (Black) — the subtractive model used in printing. More accurate to real pigment behavior than RYB. Cyan + Magenta produce clean violets; Magenta + Yellow produce clean oranges — relationships that differ from RYB.',ex:'"A print shop works in CMYK; a painter works in RYB — both are subtractive, but the primaries differ."',vis:[{h:185,s:75,l:48},{h:310,s:70,l:48},{h:55,s:78,l:52},{h:0,s:0,l:10}]},
+  // Pigments
+  {word:'Lightfastness',cat:'pigment',def:'A pigment\'s resistance to fading when exposed to light over time. Rated ASTM I (excellent), II (very good), or III (poor — avoid for archival work). Always check the tube label.',ex:'"Alizarin Crimson (historical) is rated ASTM III — it fades over decades. Use Permanent Alizarin (PR177) instead."',vis:[{h:5,s:78,l:50},{h:5,s:60,l:55},{h:5,s:38,l:60},{h:5,s:18,l:66}]},
+  {word:'Opacity / transparency',cat:'pigment',def:'Opaque pigments block underlying layers (Cadmium Red, Titanium White, Cerulean Blue). Transparent pigments allow underlying paint to show through (Alizarin Crimson, Phthalo Blue, Burnt Sienna). Transparent pigments are used for glazing.',ex:'"Use an opaque pigment for the final highlight — it will sit solidly on top. Use a transparent pigment for glazes."',vis:[{h:5,s:78,l:50},{h:5,s:72,l:50,opacity:.8},{h:5,s:65,l:50,opacity:.5},{h:5,s:55,l:50,opacity:.3}]},
+  {word:'Pigment code',cat:'pigment',def:'The standardized code on a paint tube label identifying the actual pigment used — e.g. PR108 = Pigment Red 108 (cadmium red). Enables comparison across brands. "Hue" in a name means the original pigment is not used.',ex:'"Cadmium Red Hue" means the tube contains no actual cadmium — it\'s a cheaper substitute pigment.',vis:[]},
+  {word:'Tinting strength',cat:'pigment',def:'How powerfully a pigment colors other paint when mixed. Phthalo Green and Phthalo Blue have extreme tinting strength — a tiny amount overwhelms a large pile of other paint. Earth pigments (Yellow Ochre, Raw Umber) have low tinting strength.',ex:'"Add Phthalo Blue in matchhead-sized amounts — its tinting strength is so high it turns everything blue."',vis:[{h:200,s:70,l:15},{h:200,s:68,l:22},{h:200,s:65,l:30},{h:200,s:55,l:42}]},
+];
+
+let glossFilter='all',glossSearch='';
+const GLOSS_CATS=['all','attribute','relationship','temperature','mixing','perception','system','pigment'];
+
+function buildGlossary(){
+  const filt=document.getElementById('glossFilters');
+  GLOSS_CATS.forEach(c=>{
+    const b=document.createElement('button');b.className='gf'+(c==='all'?' on':'');
+    b.textContent=c==='all'?'All':c.charAt(0).toUpperCase()+c.slice(1);
+    b.onclick=()=>{glossFilter=c;document.querySelectorAll('.gf').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderGloss()};
+    filt.appendChild(b);
+  });
+  renderGloss();
+}
+
+function filterGloss(){glossSearch=document.getElementById('glossSearch').value.toLowerCase();renderGloss()}
+
+function renderGloss(){
+  const grid=document.getElementById('glossGrid');grid.innerHTML='';
+  const items=GLOSSARY.filter(t=>{
+    const matchCat=glossFilter==='all'||t.cat===glossFilter;
+    const matchSearch=!glossSearch||t.word.toLowerCase().includes(glossSearch)||t.def.toLowerCase().includes(glossSearch)||t.ex.toLowerCase().includes(glossSearch);
+    return matchCat&&matchSearch;
+  });
+  if(items.length===0){grid.innerHTML=`<div class="gloss-none">No terms match "${glossSearch||glossFilter}"</div>`;return;}
+  items.forEach(t=>{
+    const card=document.createElement('div');card.className='gt';
+    const visHtml=t.vis&&t.vis.length?`<div class="gt-vis">${t.vis.map(v=>`<div style="flex:1;background:hsl(${v.h},${v.s}%,${v.l}%)"></div>`).join('')}</div>`:'';
+    const exHtml=t.ex?`<div class="gt-ex">${t.ex}</div>`:'';
+    card.innerHTML=`<div class="gt-header"><div class="gt-word">${t.word}</div><div class="gt-cat">${t.cat}</div></div>${visHtml}<div class="gt-def">${t.def}</div>${exHtml}`;
+    grid.appendChild(card);
+  });
+}
+
+function switchTab(id,btn){
+  document.querySelectorAll('.sub-section').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sub-'+id).classList.add('on');
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function go(id,btn){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s-'+id).classList.add('on');
+  document.querySelectorAll('.nl').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  if(id==='wheel')setTimeout(renderWheel,30);
+}
+
+// Hero animated background
+(function(){
+  const bg=document.getElementById('heroBg');
+  const hues=[0,30,60,100,150,200,260,300];
+  const bars=[];
+  hues.forEach(h=>{const d=document.createElement('div');d.className='hero-bar';d.style.background=`hsl(${h},75%,58%)`;bg.appendChild(d);bars.push({el:d,h})});
+  let t=0;
+  (function tick(){t+=0.008;bars.forEach((b,i)=>{const hh=(b.h+t*15+i*5)%360;b.el.style.background=`hsl(${Math.round(hh)},75%,58%)`});requestAnimationFrame(tick)})();
+})();
+
+buildMixer();
+buildConcepts();
+buildPaletteBuilder();
+buildGlossary();
+renderWheel();
+</script>
+</body>
+</html>
