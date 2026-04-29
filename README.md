@@ -2,7 +2,7 @@
 
 An interactive, client side web application for exploring color theory concepts through real time visualization and simulation. The system is designed around the traditional RYB color model used in painting rather than RGB, providing a more accurate representation of pigment based color behavior.
 
----
+
 
 ## Overview
 
@@ -10,7 +10,7 @@ This project implements a modular single page web application that enables users
 
 The application focuses on bridging visual design, perceptual psychology, and computational modeling by translating abstract color theory into dynamic, user driven interactions.
 
----
+
 
 ## System Architecture
 
@@ -22,7 +22,7 @@ The application follows a client side component based structure implemented in v
 
 There is no backend dependency. All computations and state management are handled in the browser.
 
----
+
 
 ## Core Functional Modules
 
@@ -39,7 +39,7 @@ There is no backend dependency. All computations and state management are handle
   - Square palettes  
 - Provides real time updates based on user interaction (drag events)  
 
----
+
 
 ### 2. Pigment Mixing System
 
@@ -51,7 +51,7 @@ Features:
 - Step by step mixing instructions  
 - Contextual mixing tips  
 
----
+
 
 ### 3. Concept Rendering Engine
 
@@ -59,7 +59,7 @@ Features:
 - Dynamically injects content into the DOM  
 - Organized by topic hierarchy aligned with course structure  
 
----
+
 
 ### 4. Harmony Testing Tool
 
@@ -72,7 +72,7 @@ Displays:
 - Color metadata  
 - Explanatory descriptions  
 
----
+
 
 ### 5. Visual Glossary
 
@@ -80,7 +80,7 @@ Displays:
 - Categorized terminology such as hue, chroma, and value  
 - Dynamic filtering based on user input  
 
----
+
 
 ## Color Modeling Approach
 
@@ -95,7 +95,7 @@ Supports simulation of:
 - Value adjustments  
 - Neutralization using complementary colors  
 
----
+
 
 ## Technologies
 
@@ -106,13 +106,12 @@ Supports simulation of:
 
 No external libraries or frameworks are used.
 
----
 
 ## Live Demo
 
 https://shovkatzeynal.github.io/color_fundamentals/
 
----
+
 
 ## Design Considerations
 
@@ -121,7 +120,7 @@ https://shovkatzeynal.github.io/color_fundamentals/
 - Minimal UI to reduce cognitive load  
 - Interactive first approach to prioritize exploration over static content  
 
----
+
 
 ## Limitations
 
@@ -129,7 +128,7 @@ https://shovkatzeynal.github.io/color_fundamentals/
 - No persistence layer, state resets on refresh  
 - Not optimized for color vision deficiencies  
 
----
+
 
 ## Future Improvements
 
@@ -139,7 +138,7 @@ https://shovkatzeynal.github.io/color_fundamentals/
 - Modularize into a component based framework such as React  
 - Add backend support for saving palettes  
 
----
+
 
 ## License
 
