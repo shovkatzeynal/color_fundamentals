@@ -83,7 +83,7 @@ canvas#wheel{border-radius:50%;cursor:crosshair;display:block}
 .cbody.on{display:block}
 .cexplain{font-size:13px;line-height:1.8;color:var(--txt2);margin-bottom:.875rem}
 .cexplain b{color:var(--txt);font-weight:500}
-/* TOOLS — sub-tabs */
+@media(max-width:540px){.pb-twocol{grid-template-columns:1fr!important}}
 .stabs{display:flex;gap:6px;margin-bottom:1.5rem;border-bottom:0.5px solid var(--border);padding-bottom:0}
 .stab{padding:8px 16px;border:none;background:none;font-size:13px;cursor:pointer;color:var(--txt2);border-bottom:2px solid transparent;margin-bottom:-0.5px}
 .stab:hover{color:var(--txt)}
@@ -236,21 +236,67 @@ canvas#wheel{border-radius:50%;cursor:crosshair;display:block}
 
     <!-- PALETTE BUILDER -->
     <div class="sub-section on" id="sub-palette">
-      <div class="card">
-        <div class="clabel">Step 1 — select the pigments you own</div>
-        <p style="font-size:12px;color:var(--txt2);margin-bottom:.875rem;line-height:1.65">Check off every tube on your palette. The builder will only show recipes that are achievable with what you have.</p>
-        <div class="pigment-grid" id="pigmentGrid"></div>
-        <div style="display:flex;gap:8px;margin-top:.5rem">
-          <button class="sm-btn" style="width:auto;padding:6px 16px" onclick="selectAllPigments()">Select all</button>
-          <button class="sm-btn" style="width:auto;padding:6px 16px" onclick="clearAllPigments()">Clear all</button>
-          <span id="pbCount" style="font-size:12px;color:var(--txt2);align-self:center;margin-left:4px"></span>
+
+      <!-- Big clear headline -->
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <div style="font-size:28px">🎨</div>
+        <div>
+          <div style="font-size:15px;font-weight:500;margin-bottom:3px">What can you mix today?</div>
+          <div style="font-size:13px;color:var(--txt2);line-height:1.6">Tap the paint tubes you own below. The tool instantly shows every color you can mix — with exact step-by-step instructions.</div>
         </div>
       </div>
-      <div class="pb-result" id="pbResult">
-        <div class="clabel" style="margin-bottom:.75rem">Step 2 — recipes you can mix right now</div>
-        <div id="pbRecipes"></div>
+
+      <!-- TWO COLUMN LAYOUT -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:start">
+
+        <!-- LEFT: your tubes -->
+        <div>
+          <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.1rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+              <div>
+                <div style="font-size:13px;font-weight:500">Your paint tubes</div>
+                <div style="font-size:11px;color:var(--txt2);margin-top:1px">Tap to check off what you own</div>
+              </div>
+              <span id="pbCount" style="font-size:11px;color:var(--txt2);background:var(--bg3);padding:3px 9px;border-radius:50px;border:0.5px solid var(--border2)">0 selected</span>
+            </div>
+            <div id="pigmentGrid" style="display:flex;flex-direction:column;gap:4px"></div>
+            <div style="display:flex;gap:6px;margin-top:.75rem">
+              <button class="sm-btn" style="width:auto;padding:5px 14px" onclick="selectAllPigments()">Select all</button>
+              <button class="sm-btn" style="width:auto;padding:5px 14px" onclick="clearAllPigments()">Clear all</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: what you can mix -->
+        <div>
+          <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.1rem;min-height:200px">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.75rem">Colors you can mix right now</div>
+            <div id="pbOutput">
+              <div style="text-align:center;padding:2.5rem 1rem;color:var(--txt2)">
+                <div style="font-size:24px;margin-bottom:.5rem">👈</div>
+                <div style="font-size:13px">Select tubes on the left<br>to see your mixing options</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end grid -->
+
+      <!-- RECIPE DETAIL PANEL (appears below when a color is clicked) -->
+      <div id="pbDetail" style="display:none;margin-top:1rem;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rad);padding:1.25rem">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem">
+          <div id="detSwatch" style="width:52px;height:52px;border-radius:8px;flex-shrink:0;border:0.5px solid rgba(0,0,0,.1)"></div>
+          <div>
+            <div id="detName" style="font-size:17px;font-weight:500"></div>
+            <div style="font-size:12px;color:var(--txt2);margin-top:2px">Step-by-step mixing recipe</div>
+          </div>
+        </div>
+        <div class="clabel">How to mix it</div>
+        <div id="detSteps" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:.75rem"></div>
+        <div id="detTip" style="background:var(--bg3);border-radius:var(--rad-sm);padding:.65rem .9rem;font-size:12px;line-height:1.7;color:var(--txt2)"></div>
+        <div id="detNote" style="display:none;background:#fffbf0;border:0.5px solid #d8c860;border-radius:var(--rad-sm);padding:.65rem .9rem;font-size:12px;line-height:1.7;color:#5a4a00;margin-top:6px"></div>
       </div>
-      <div style="text-align:center;padding:1.5rem 0;color:var(--txt2);font-size:13px" id="pbPrompt">Select your pigments above to see what you can mix.</div>
+
     </div>
 
     <!-- GLOSSARY -->
@@ -635,67 +681,122 @@ let selectedPigments=new Set();
 
 function buildPaletteBuilder(){
   const g=document.getElementById('pigmentGrid');
-  const groups={whites:'Whites & Blacks',blacks:'',reds:'Reds',oranges:'Oranges',yellows:'Yellows',greens:'Greens',blues:'Blues',violets:'Violets',earths:'Earth tones'};
+  const groupLabels={whites:'Whites & Blacks',reds:'Reds',oranges:'Oranges',yellows:'Yellows',greens:'Greens',blues:'Blues',violets:'Violets',earths:'Earth tones'};
   let lastGroup='';
   PIGMENTS.forEach(p=>{
-    if(p.group!==lastGroup&&groups[p.group]&&p.group!=='blacks'){
+    // group header (skip blacks as separate group — they're with whites)
+    const grp=p.group==='blacks'?'whites':p.group;
+    if(grp!==lastGroup&&groupLabels[grp]){
       const lbl=document.createElement('div');
-      lbl.style.cssText='grid-column:1/-1;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--txt2);padding-top:.25rem';
-      lbl.textContent=groups[p.group];g.appendChild(lbl);lastGroup=p.group;
+      lbl.style.cssText='font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--txt2);padding:.4rem 0 .1rem;font-weight:500';
+      lbl.textContent=groupLabels[grp];g.appendChild(lbl);lastGroup=grp;
     }
-    const chip=document.createElement('div');chip.className='pigment-chip';chip.id='chip-'+p.id;
-    chip.innerHTML=`<div class="chip-color" style="background:${p.hex}"></div><div class="chip-name">${p.name}</div>`;
-    chip.onclick=()=>togglePigment(p.id);
-    g.appendChild(chip);
+    // tube row — horizontal, easy to read
+    const row=document.createElement('div');
+    row.id='chip-'+p.id;
+    row.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:var(--rad-sm);cursor:pointer;border:1.5px solid transparent;background:var(--bg3);transition:border-color .12s';
+    row.innerHTML=`
+      <div style="width:28px;height:28px;border-radius:5px;background:${p.hex};flex-shrink:0;border:0.5px solid rgba(0,0,0,.12)"></div>
+      <div style="font-size:12px;flex:1;color:var(--txt)">${p.name}</div>
+      <div class="chip-check" style="width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px"></div>`;
+    row.onclick=()=>togglePigment(p.id);
+    g.appendChild(row);
   });
   updatePBCount();
 }
 
 function togglePigment(id){
-  if(selectedPigments.has(id))selectedPigments.delete(id);else selectedPigments.add(id);
-  document.getElementById('chip-'+id).classList.toggle('sel',selectedPigments.has(id));
-  updatePBCount();renderPBRecipes();
-}
-function selectAllPigments(){PIGMENTS.forEach(p=>{selectedPigments.add(p.id);document.getElementById('chip-'+p.id).classList.add('sel')});updatePBCount();renderPBRecipes()}
-function clearAllPigments(){PIGMENTS.forEach(p=>{selectedPigments.delete(p.id);document.getElementById('chip-'+p.id).classList.remove('sel')});updatePBCount();renderPBRecipes()}
-function updatePBCount(){const n=selectedPigments.size;document.getElementById('pbCount').textContent=n>0?n+' pigment'+(n===1?'':' s')+' selected':'';}
-
-function renderPBRecipes(){
-  const container=document.getElementById('pbRecipes');
-  const prompt=document.getElementById('pbPrompt');
-  const result=document.getElementById('pbResult');
-  container.innerHTML='';
-  if(selectedPigments.size===0){result.classList.remove('on');prompt.style.display='block';return;}
-  prompt.style.display='none';
-  const available=PB_RECIPES.filter(r=>r.needs.every(id=>selectedPigments.has(id)));
-  const missing=PB_RECIPES.filter(r=>!r.needs.every(id=>selectedPigments.has(id)));
-  result.classList.add('on');
-  if(available.length===0){
-    container.innerHTML=`<div class="pb-warn">No complete recipes available with your current selection. Try adding more pigments — most recipes need at least 2–3 tubes.</div>`;
+  if(selectedPigments.has(id))selectedPigments.delete(id);
+  else selectedPigments.add(id);
+  const row=document.getElementById('chip-'+id);
+  const check=row.querySelector('.chip-check');
+  if(selectedPigments.has(id)){
+    row.style.borderColor='var(--txt)';row.style.background='var(--bg2)';
+    check.style.background='var(--txt)';check.style.borderColor='var(--txt)';check.textContent='✓';check.style.color='var(--bg2)';
   } else {
-    const hdr=document.createElement('div');
-    hdr.innerHTML=`<div style="font-size:12px;color:var(--txt2);margin-bottom:.75rem">${available.length} recipe${available.length===1?'':'s'} achievable with your palette${missing.length>0?' · <span style="color:var(--txt3)">'+missing.length+' need additional pigments</span>':''}</div>`;
-    container.appendChild(hdr);
-    available.forEach(r=>{
-      const card=document.createElement('div');card.className='pb-recipe-card';
-      const steps=r.steps.map(s=>`<div class="pb-step"><div class="pb-dot" style="background:${PIGMENTS.find(p=>p.id===s.id)?.hex||'#888'}"></div><span><b>${s.label}</b> — ${s.amount}</span></div>`).join('');
-      card.innerHTML=`<div class="pb-target"><div class="pb-target-dot" style="background:${r.hex}"></div><div><div class="pb-target-name">${r.name}</div><div class="pb-target-sub">${r.steps.length} pigment${r.steps.length===1?'':'s'}</div></div></div><div class="pb-steps">${steps}</div><div class="pb-tip">${r.tip}</div>${r.note?`<div class="pb-tip" style="margin-top:6px;border-left:3px solid #d4a820;padding-left:10px">${r.note}</div>`:''}`;
-      container.appendChild(card);
-    });
+    row.style.borderColor='transparent';row.style.background='var(--bg3)';
+    check.style.background='';check.style.borderColor='var(--border2)';check.textContent='';
   }
-  if(missing.length>0&&available.length>0){
-    const sec=document.createElement('div');
-    sec.innerHTML=`<div style="font-size:12px;font-weight:500;margin:1.25rem 0 .65rem;color:var(--txt)">Recipes you're missing pigments for</div>`;
-    container.appendChild(sec);
-    missing.slice(0,6).forEach(r=>{
-      const missingIds=r.needs.filter(id=>!selectedPigments.has(id));
-      const missingNames=missingIds.map(id=>PIGMENTS.find(p=>p.id===id)?.name||id).join(', ');
-      const card=document.createElement('div');
-      card.style.cssText='background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--rad-sm);padding:.75rem 1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem';
-      card.innerHTML=`<div style="width:28px;height:28px;border-radius:5px;background:${r.hex};flex-shrink:0;border:0.5px solid rgba(0,0,0,.1)"></div><div><div style="font-size:13px;font-weight:500">${r.name}</div><div style="font-size:11px;color:var(--txt2);margin-top:2px">Still need: ${missingNames}</div></div>`;
-      container.appendChild(card);
-    });
+  updatePBCount();renderPBOutput();
+}
+
+function selectAllPigments(){
+  PIGMENTS.forEach(p=>{selectedPigments.add(p.id);
+    const row=document.getElementById('chip-'+p.id),check=row.querySelector('.chip-check');
+    row.style.borderColor='var(--txt)';row.style.background='var(--bg2)';
+    check.style.background='var(--txt)';check.style.borderColor='var(--txt)';check.textContent='✓';check.style.color='var(--bg2)';
+  });
+  updatePBCount();renderPBOutput();
+}
+function clearAllPigments(){
+  PIGMENTS.forEach(p=>{selectedPigments.delete(p.id);
+    const row=document.getElementById('chip-'+p.id),check=row.querySelector('.chip-check');
+    row.style.borderColor='transparent';row.style.background='var(--bg3)';
+    check.style.background='';check.style.borderColor='var(--border2)';check.textContent='';
+  });
+  updatePBCount();renderPBOutput();
+}
+function updatePBCount(){
+  const n=selectedPigments.size;
+  document.getElementById('pbCount').textContent=n===0?'0 selected':n+' tube'+(n===1?'':' s')+' selected';
+}
+
+function renderPBOutput(){
+  const out=document.getElementById('pbOutput');
+  // hide detail panel when palette changes
+  document.getElementById('pbDetail').style.display='none';
+  if(selectedPigments.size===0){
+    out.innerHTML=`<div style="text-align:center;padding:2.5rem 1rem;color:var(--txt2)"><div style="font-size:24px;margin-bottom:.5rem">👈</div><div style="font-size:13px">Select tubes on the left<br>to see your mixing options</div></div>`;
+    return;
   }
+  const available=PB_RECIPES.filter(r=>r.needs.every(id=>selectedPigments.has(id)));
+  const almostThere=PB_RECIPES.filter(r=>{
+    const miss=r.needs.filter(id=>!selectedPigments.has(id));
+    return miss.length===1;
+  });
+  if(available.length===0){
+    const hints=almostThere.slice(0,3).map(r=>{
+      const missId=r.needs.find(id=>!selectedPigments.has(id));
+      const missName=PIGMENTS.find(p=>p.id===missId)?.name||missId;
+      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--bg3);border-radius:var(--rad-sm);margin-bottom:4px"><div style="width:20px;height:20px;border-radius:4px;background:${r.hex};flex-shrink:0;border:0.5px solid rgba(0,0,0,.1)"></div><div style="font-size:12px"><span style="font-weight:500">${r.name}</span> — add ${missName}</div></div>`;
+    }).join('');
+    out.innerHTML=`<div style="font-size:12px;color:var(--txt2);margin-bottom:.75rem">No complete recipes yet. Try adding a few more tubes.</div>${hints}`;
+    return;
+  }
+  out.innerHTML=`<div style="font-size:12px;color:var(--txt2);margin-bottom:.65rem">You can mix <b style="color:var(--txt)">${available.length} color${available.length===1?'':'s'}</b> — tap any to see how:</div>`;
+  available.forEach(r=>{
+    const btn=document.createElement('div');
+    btn.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--rad-sm);cursor:pointer;border:1.5px solid transparent;margin-bottom:4px;background:var(--bg3)';
+    btn.innerHTML=`<div style="width:32px;height:32px;border-radius:6px;background:${r.hex};flex-shrink:0;border:0.5px solid rgba(0,0,0,.12)"></div><div style="flex:1"><div style="font-size:13px;font-weight:500">${r.name}</div><div style="font-size:11px;color:var(--txt2);margin-top:1px">${r.steps.map(s=>s.label.split(' ')[0]).join(' + ')}</div></div><div style="font-size:11px;color:var(--txt2)">→</div>`;
+    btn.onmouseenter=()=>{if(!btn.classList.contains('active'))btn.style.borderColor='var(--border2)'};
+    btn.onmouseleave=()=>{if(!btn.classList.contains('active'))btn.style.borderColor='transparent'};
+    btn.onclick=()=>showRecipeDetail(r,btn);
+    out.appendChild(btn);
+  });
+}
+
+function showRecipeDetail(r,btn){
+  // deselect others
+  document.querySelectorAll('#pbOutput div[style]').forEach(el=>{el.style.borderColor='transparent';el.classList.remove('active')});
+  btn.style.borderColor='var(--txt)';btn.classList.add('active');
+  document.getElementById('detSwatch').style.background=r.hex;
+  document.getElementById('detName').textContent=r.name;
+  const steps=document.getElementById('detSteps');steps.innerHTML='';
+  r.steps.forEach((s,i)=>{
+    const pig=PIGMENTS.find(p=>p.id===s.id);
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:10px;padding:6px 8px;background:var(--bg3);border-radius:var(--rad-sm)';
+    row.innerHTML=`<div style="width:24px;height:24px;border-radius:5px;background:${pig?.hex||'#888'};flex-shrink:0;border:0.5px solid rgba(0,0,0,.1)"></div><div><div style="font-size:13px;font-weight:500">${s.label}</div><div style="font-size:11px;color:var(--txt2)">${s.amount}</div></div>`;
+    if(i<r.steps.length-1){
+      const plus=document.createElement('div');plus.style.cssText='text-align:center;color:var(--txt2);font-size:16px;padding:2px 0';plus.textContent='+';
+      steps.appendChild(row);steps.appendChild(plus);
+    } else {steps.appendChild(row);}
+  });
+  document.getElementById('detTip').textContent=r.tip;
+  const dn=document.getElementById('detNote');
+  if(r.note){dn.textContent=r.note;dn.style.display='block';}else dn.style.display='none';
+  const det=document.getElementById('pbDetail');det.style.display='block';
+  det.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 // ── VISUAL GLOSSARY ────────────────────────────────────────────────
